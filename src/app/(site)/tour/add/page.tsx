@@ -3,11 +3,12 @@ import Map from "@/components/map";
 
 export default function AddTour() {
   return (
-    <div className="flex gap-4">
-      <div className="w-[400px] p-4">
+    <div className="flex gap-4 h-full">
+      <div className="w-[400px]">
+        <h2 className="text-2xl font-bold mb-4">Thêm tour mới</h2>
         <AddTourForm />
       </div>
-      <div className="w-full p-4">
+      <div className="w-full">
         <Map />
       </div>
     </div>

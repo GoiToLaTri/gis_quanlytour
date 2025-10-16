@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, models, Schema } from "mongoose";
 
 const tourSchema = new Schema({
   ten: { type: String, required: true },
@@ -7,6 +7,6 @@ const tourSchema = new Schema({
   so_ngay: { type: Number, required: true },
 });
 
-const TourSchema = model("tour", tourSchema);
+const Tour = models.Tour || model("Tour", tourSchema);
 
-export default TourSchema;
+export default Tour;

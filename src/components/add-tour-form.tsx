@@ -2,6 +2,9 @@
 import React from "react";
 import type { FormProps } from "antd";
 import { Button, Form, Input, InputNumber } from "antd";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type FieldType = {
   ten?: string;
@@ -10,15 +13,33 @@ type FieldType = {
   so_ngay?: number;
 };
 
-const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
-
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
-
 export default function AddTourForm() {
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: async (data: FieldType) => {
+      const res = await axios.post("/api/tours", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      router.replace("/");
+    },
+    onError: (error) => {
+      console.error("Error creating tour:", error);
+    },
+  });
+
+  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    console.log("Success:", values);
+    mutation.mutate(values);
+  };
+
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
     <Form
       name="basic"

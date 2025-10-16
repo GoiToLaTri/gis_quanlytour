@@ -83,7 +83,7 @@ export default function AddTourForm() {
       </Form.Item>
 
       <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
+        <Button color="default" variant="solid" htmlType="submit">
           Tạo tour
         </Button>
       </Form.Item>

@@ -19,9 +19,11 @@ type FieldType = {
 export default function AddDestinationForm({
   long,
   lat,
+  tour_id,
 }: {
   long: number;
   lat: number;
+  tour_id?: string;
 }) {
   const router = useRouter();
 
@@ -54,10 +56,11 @@ export default function AddDestinationForm({
   // Cập nhật giá trị khi long/lat thay đổi
   useEffect(() => {
     form.setFieldsValue({
+      ma_tour: tour_id,
       kinh_do: long,
       vi_do: lat,
     });
-  }, [long, lat, form]);
+  }, [long, lat, tour_id, form]);
 
   return (
     <Form
@@ -125,7 +128,7 @@ export default function AddDestinationForm({
       </Form.Item>
 
       <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
+        <Button color="default" variant="solid" htmlType="submit">
           Thêm địa điểm
         </Button>
       </Form.Item>

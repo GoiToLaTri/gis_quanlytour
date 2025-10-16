@@ -19,13 +19,20 @@ export default function TourManage() {
       <div className="flex justify-between">
         <h2 className="text-3xl font-bold mb-4">Quản lý tour</h2>
         <Link href="/tour/add">
-          <Button type="primary">Thêm tour</Button>
+          <Button color="default" variant="solid" size="large">
+            Thêm tour
+          </Button>
         </Link>
       </div>
       {tours && tours.length === 0 && <p>Chưa có tour nào</p>}
       <ul>
         {tours?.map((tour: { _id: string; ten: string }) => (
-          <li key={tour._id}>{tour._id} - {tour.ten} - <Link href={`/destination/add/`}>Thêm điểm tham quan</Link></li>
+          <li key={tour._id}>
+            {tour._id} - {tour.ten} -{" "}
+            <Link href={`/destination/add/${tour._id}`}>
+              Thêm điểm tham quan
+            </Link>
+          </li>
         ))}
       </ul>
     </div>

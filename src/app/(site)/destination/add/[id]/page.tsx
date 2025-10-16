@@ -2,9 +2,11 @@
 import AddDestinationForm from "@/components/add-destination-form";
 import { LatLngExpression } from "leaflet";
 import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
 export default function AddDestination() {
+  const params = useParams<{ id: string }>();
   const DesMap = dynamic(() => import("@/components/des-map"), {
     ssr: false, // Tắt server-side rendering
     loading: () => <p>Đang tải bản đồ...</p>,
@@ -37,7 +39,8 @@ export default function AddDestination() {
   return (
     <div className="flex gap-4">
       <div className="w-[400px]">
-        <AddDestinationForm long={long} lat={lat} />
+        <h2 className="text-2xl font-bold mb-4">Thêm điểm tham quan</h2>
+        <AddDestinationForm long={long} lat={lat} tour_id={params.id} />
       </div>
       <div className="w-full">
         {/* <DesMap /> */}

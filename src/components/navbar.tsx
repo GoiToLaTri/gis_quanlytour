@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
-  console.log(pathname);
   return (
     <div className="w-full flex justify-center bg-[#F3EDF7] py-4 gap-4 mb-4">
       <Link href={"/"}>

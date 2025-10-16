@@ -25,7 +25,7 @@ export default function TourManage() {
       {tours && tours.length === 0 && <p>Chưa có tour nào</p>}
       <ul>
         {tours?.map((tour: { _id: string; ten: string }) => (
-          <li key={tour._id}>{tour.ten}</li>
+          <li key={tour._id}>{tour._id} - {tour.ten} - <Link href={`/destination/add/`}>Thêm điểm tham quan</Link></li>
         ))}
       </ul>
     </div>

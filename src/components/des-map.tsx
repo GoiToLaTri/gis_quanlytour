@@ -65,12 +65,14 @@ export default function DesMap({
   zoom = 12,
   location,
   setLocation,
+  locations,
 }: //   location,
 {
   position?: LatLngExpression;
   zoom?: number;
   location: LatLngExpression | null;
   setLocation: (loc: LatLngExpression) => void;
+  locations?: Array<{ position: LatLngExpression; name: string }>;
 }) {
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
   // Đồng bộ marker với location prop từ cha
@@ -78,7 +80,7 @@ export default function DesMap({
   useEffect(() => {
     setClickedPos(location);
   }, [location]);
-
+  console.log(locations);
   return (
     <MapContainer
       center={position as LatLngExpression}
@@ -90,15 +92,16 @@ export default function DesMap({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {/* {locations.map((loc, i) => (
-        <Marker key={i} position={loc.position as LatLngExpression}>
-          <Popup>
-            <b>{loc.name}</b>
-            <br />
-            {loc.position.toString()}
-          </Popup>
-        </Marker>
-      ))} */}
+      {locations &&
+        locations.map((loc, i) => (
+          <Marker key={i} position={loc.position as LatLngExpression}>
+            <Popup>
+              <b>{loc.name}</b>
+              <br />
+              {loc.position.toString()}
+            </Popup>
+          </Marker>
+        ))}
 
       {/* Khi click, hiển thị marker mới */}
       {clickedPos && (

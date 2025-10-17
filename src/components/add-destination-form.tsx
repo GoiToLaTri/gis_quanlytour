@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input, InputNumber } from "antd";
-import { useMutation } from "@tanstack/react-query";
+import { Button, Checkbox, Form, Input, InputNumber, message } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { QueryKeys } from "@/enums";
 
 type FieldType = {
   ma_tour?: string;
@@ -25,18 +25,40 @@ export default function AddDestinationForm({
   lat: number;
   tour_id?: string;
 }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDisable, setIsDisable] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async (data: FieldType) => {
+      setIsLoading(true);
+      setIsDisable(true);
       const res = await axios.post("/api/destination", data);
       return res.data;
     },
     onSuccess: () => {
-      router.replace("/destinations");
+      // router.replace("/destination");
+      setIsLoading(false);
+      setIsDisable(false);
+      queryClient.prefetchQuery({
+        queryKey: [QueryKeys.TOUR_DETAIL],
+      });
+      messageApi.open({
+        type: "success",
+        content: "Thêm địa điểm thành công",
+      });
     },
     onError: (error) => {
-      console.error("Error creating tour:", error);
+      setIsLoading(false);
+      setIsDisable(false);
+      messageApi.open({
+        type: "error",
+        content: (error as unknown as { response: { data: string } }).response
+          .data,
+      });
+      // console.error("Error creating tour:", error);
     },
   });
 
@@ -72,12 +94,13 @@ export default function AddDestinationForm({
       autoComplete="off"
       layout="vertical"
     >
+      {contextHolder}
       <Form.Item<FieldType>
         label="Mã tour"
         name="ma_tour"
         rules={[{ required: true, message: "Vui lòng nhập mã tour!" }]}
       >
-        <Input />
+        <Input disabled />
       </Form.Item>
 
       <Form.Item<FieldType>
@@ -85,7 +108,7 @@ export default function AddDestinationForm({
         name="ten"
         rules={[{ required: true, message: "Vui lòng nhập tên địa điểm!" }]}
       >
-        <Input />
+        <Input disabled={isDisable} />
       </Form.Item>
 
       <Form.Item<FieldType>
@@ -93,7 +116,7 @@ export default function AddDestinationForm({
         name="dia_chi"
         rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
       >
-        <Input />
+        <Input disabled={isDisable} />
       </Form.Item>
 
       <Form.Item<FieldType>
@@ -101,7 +124,7 @@ export default function AddDestinationForm({
         name="kinh_do"
         rules={[{ required: true, message: "Vui lòng nhập kinh độ!" }]}
       >
-        <InputNumber className="!w-full" min={0} />
+        <InputNumber className="!w-full" min={0} disabled={isDisable} />
       </Form.Item>
 
       <Form.Item<FieldType>
@@ -109,7 +132,7 @@ export default function AddDestinationForm({
         name="vi_do"
         rules={[{ required: true, message: "Vui lòng nhập vi độ!" }]}
       >
-        <InputNumber className="!w-full" min={0} />
+        <InputNumber className="!w-full" min={0} disabled={isDisable} />
       </Form.Item>
 
       <Form.Item label={null}>
@@ -128,7 +151,12 @@ export default function AddDestinationForm({
       </Form.Item>
 
       <Form.Item label={null}>
-        <Button color="default" variant="solid" htmlType="submit">
+        <Button
+          color="default"
+          variant="solid"
+          htmlType="submit"
+          loading={isLoading}
+        >
           Thêm địa điểm
         </Button>
       </Form.Item>

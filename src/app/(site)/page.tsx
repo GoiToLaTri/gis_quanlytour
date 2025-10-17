@@ -7,13 +7,14 @@ import axios from "axios";
 import Link from "next/link";
 
 export default function TourManage() {
-  const { data: tours } = useQuery({
+  const { data: tours, isLoading } = useQuery({
     queryKey: [QueryKeys.TOUR],
     queryFn: async () => {
       const res = await axios.get("/api/tours");
       return res.data;
     },
   });
+
   return (
     <div>
       <div className="flex justify-between">
@@ -24,7 +25,8 @@ export default function TourManage() {
           </Button>
         </Link>
       </div>
-      {tours && tours.length === 0 && <p>Chưa có tour nào</p>}
+      {isLoading && <p>Đang lấy danh sách tour...</p>}
+      {!isLoading && tours && tours.length === 0 && <p>Chưa có tour nào</p>}
       <ul>
         {tours?.map((tour: { _id: string; ten: string }) => (
           <li key={tour._id}>

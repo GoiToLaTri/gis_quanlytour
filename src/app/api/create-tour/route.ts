@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       so_ngay,
     });
     return new Response(JSON.stringify(newTour), { status: 201 });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.log(error);
     return new Response("Failed to create tour", { status: 500 });

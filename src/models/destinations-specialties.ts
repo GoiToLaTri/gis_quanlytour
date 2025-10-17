@@ -1,12 +1,15 @@
 import { model, models, Schema } from "mongoose";
 
-const destinationsSpecialtiesSchema = new Schema({
-  ma_dac_san: { type: Schema.Types.ObjectId, required: true },
-  ten: { type: String, required: true },
-});
+const destinationsSpecialtiesSchema = new Schema(
+  {
+    maDS: { type: Schema.Types.ObjectId, required: true },
+    maDD: { type: Schema.Types.ObjectId, required: true },
+  },
+  { collection: "destination-specialty" },
+);
 
 const DestinationsSpecialties =
-  models.DestinationsSpecialties ||
-  model("destinationsSpecialties", destinationsSpecialtiesSchema);
+  models["destination-specialty"] ||
+  model("destination-specialty", destinationsSpecialtiesSchema);
 
 export default DestinationsSpecialties;

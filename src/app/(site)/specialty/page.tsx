@@ -1,42 +1,10 @@
 "use client";
-import { useState } from "react";
 import axios from "axios";
-import { AutoComplete, Input } from "antd";
+import { useState, useCallback } from "react";
+import DesMap from "@/components/des-map";
+import { LatLngExpression } from "leaflet";
 import type { AutoCompleteProps } from "antd";
-
-const getRandomInt = (max: number, min = 0) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
-const searchResult = (query: string) =>
-  Array.from({ length: getRandomInt(5) })
-    .join(".")
-    .split(".")
-    .map((_, idx) => {
-      const category = `${query}${idx}`;
-      return {
-        value: category,
-        label: (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <span>
-              Found {query} on{" "}
-              <a
-                href={`https://s.taobao.com/search?q=${query}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {category}
-              </a>
-            </span>
-            <span>{getRandomInt(200, 100)} results</span>
-          </div>
-        ),
-      };
-    });
+import { AutoComplete, Input, Spin } from "antd";
 
 const searchSpecialties = async (query: string) => {
   try {
@@ -52,36 +20,114 @@ const searchSpecialties = async (query: string) => {
   }
 };
 
+const searchSpecialtyInDestination = async (query: string) => {
+  console.log(query);
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/search-specialty-in-destination",
+      { specialtyId: query },
+    );
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error: any) {
+    console.log("Lỗi:", error.message);
+  }
+};
+
 export default function Specialty() {
+  const [location, setLocation] = useState<LatLngExpression | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [specialties, setSpecialties] = useState<Array<object>>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [destinations, setDestinations] = useState<Array<object>>([]);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
-  const [specialties, setSpecialties] = useState<object>([]);
+  const [selectedDestination, setSelectedDestination] = useState<object | null>(
+    null,
+  );
+  const [selectedSpecialty, setSelectedSpecialty] = useState<any>(null);
+  const handleSetLocation = useCallback((loc: LatLngExpression | null) => {
+    setLocation(loc);
+  }, []);
 
   const handleSearch = async (value: string) => {
     const specialties = await searchSpecialties(value);
-    
-    setOptions(value ? options : []);
+    setSpecialties(specialties);
+    const options = specialties.map((specialty: any) => ({
+      label: specialty.ten,
+      value: specialty.ten,
+    }));
+    setOptions(options);
   };
 
-  const onSelect = (value: string) => {
-    
+  const onSelect = async (value: string) => {
+    setLoading(true);
+    const selectedSpecialty: any = specialties.find(
+      (specialty: any) => specialty.ten === value,
+    );
+    setSelectedSpecialty(selectedSpecialty);
+    setSelectedId(selectedSpecialty._id);
+    const destinations = await searchSpecialtyInDestination(
+      selectedSpecialty._id,
+    );
+    setDestinations(destinations);
+    setLoading(false);
   };
 
   return (
-    <div>
-      <AutoComplete
-        options={options}
-        onSelect={onSelect}
-        style={{ width: 300 }}
-        onSearch={handleSearch}
-        popupMatchSelectWidth={252}
-      >
-        <Input.Search
-          allowClear
-          enterButton
-          size="large"
-          placeholder="input here"
-        />
-      </AutoComplete>
+    <div className="flex gap-2">
+      <div className="w-3/10 flex flex-col">
+        <AutoComplete
+          options={options}
+          onSelect={onSelect}
+          className="w-full"
+          onSearch={handleSearch}
+        >
+          <Input.Search
+            allowClear
+            enterButton
+            size="large"
+            onClear={() => {
+              setSelectedId(null);
+              setDestinations([]);
+              setSelectedDestination(null);
+            }}
+            placeholder="Nhập tên đặc sản"
+          />
+        </AutoComplete>
+        <div
+          className={`border grow-1 border-gray-300 rounded-lg p-4 ${(!selectedId || loading) && "flex items-center justify-center"} mt-4`}
+        >
+          {loading && <Spin size="default" />}
+          {destinations.length > 0 && (
+            <span className="text-sm">
+              {selectedSpecialty?.ten} được tìm thấy ở {destinations.length}{" "}
+              điểm
+            </span>
+          )}
+          {destinations.length > 0 &&
+            destinations.map((destination: any, index) => {
+              return (
+                <div
+                  key={index}
+                  onClick={(e) => {
+                    setSelectedDestination(destination);
+                    console.log(destination);
+                  }}
+                  className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
+                >
+                  <span>
+                    {destination.ten}, {destination.dia_chi}
+                  </span>
+                </div>
+              );
+            })}
+          {!selectedId && "Kết quả sẽ được hiển thị ở đây"}
+        </div>
+      </div>
+      <div className="grow-1 min-h-150">
+        <DesMap location={location} setLocation={handleSetLocation} />
+      </div>
     </div>
   );
 }

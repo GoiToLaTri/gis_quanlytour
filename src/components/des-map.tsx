@@ -1,5 +1,4 @@
 "use client";
-
 import {
   MapContainer,
   Marker,
@@ -87,8 +86,8 @@ export default function DesMap({
       style={{ width: "100%", height: "100%" }}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+        url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`}
       />
       {/* {locations.map((loc, i) => (
         <Marker key={i} position={loc.position as LatLngExpression}>

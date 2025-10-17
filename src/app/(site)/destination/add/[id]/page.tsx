@@ -19,7 +19,7 @@ export default function AddDestination() {
   }, []);
 
   const getCoords = (
-    loc: LatLngExpression | null
+    loc: LatLngExpression | null,
   ): { lat: number; long: number } => {
     if (!loc) return { lat: 0, long: 0 };
     if (Array.isArray(loc)) {

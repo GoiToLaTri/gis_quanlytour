@@ -42,7 +42,7 @@ export default function Specialty() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [destinations, setDestinations] = useState<Array<object>>([]);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
-  const [selectedDestination, setSelectedDestination] = useState<object | null>(
+  const [selectedDestination, setSelectedDestination] = useState<any>(
     null,
   );
   const [selectedSpecialty, setSelectedSpecialty] = useState<any>(null);
@@ -102,7 +102,7 @@ export default function Specialty() {
           {destinations.length > 0 && (
             <span className="text-sm">
               {selectedSpecialty?.ten} được tìm thấy ở {destinations.length}{" "}
-              điểm
+              địa điểm
             </span>
           )}
           {destinations.length > 0 &&
@@ -112,20 +112,21 @@ export default function Specialty() {
                   key={index}
                   onClick={(e) => {
                     setSelectedDestination(destination);
-                    console.log(destination);
+                    handleSetLocation({ lat: destination?.kinh_do, lng: destination?.vi_do });
                   }}
-                  className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
+                  className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}
                 >
-                  <span>
-                    {destination.ten}, {destination.dia_chi}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span>{destination.ten}, {destination.dia_chi}</span>
+                    <span className="text-xs">({destination.kinh_do}, {destination.vi_do})</span>
+                  </div>
                 </div>
               );
             })}
           {!selectedId && "Kết quả sẽ được hiển thị ở đây"}
         </div>
       </div>
-      <div className="grow-1 min-h-150">
+      <div className="grow-1 min-h-150 rounded-lg">
         <DesMap location={location} setLocation={handleSetLocation} />
       </div>
     </div>

@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
     if (destinationSpecialty.length === 0) {
       return NextResponse.json([], { status: 200 });
     }
-    console.log("Destination specialty:", destinationSpecialty);
     const destinationIds = destinationSpecialty.map(
       (destination) => destination.maDD,
     );

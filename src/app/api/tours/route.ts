@@ -4,8 +4,14 @@ import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const q = searchParams.get("q");
+    console.log("Search query:", q);
+
     await connect();
-    const tours = await Tour.find();
+    const tours = await Tour.find({
+      $or: [{ ten: { $regex: q, $options: "i" } }],
+    });
     return new Response(JSON.stringify(tours), { status: 200 });
   } catch (error) {
     console.log(error);

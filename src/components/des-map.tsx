@@ -2,6 +2,7 @@
 import {
   MapContainer,
   Marker,
+  Polyline,
   Popup,
   TileLayer,
   useMap,
@@ -65,13 +66,15 @@ export default function DesMap({
   location,
   setLocation,
   locations,
+  polyline,
 }: //   location,
 {
   position?: LatLngExpression;
   zoom?: number;
   location: LatLngExpression | null;
-  setLocation: (loc: LatLngExpression) => void;
+  setLocation?: (loc: LatLngExpression) => void;
   locations?: Array<{ position: LatLngExpression; name: string }>;
+  polyline?: boolean;
 }) {
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
   // Đồng bộ marker với location prop từ cha
@@ -115,15 +118,23 @@ export default function DesMap({
         </Marker>
       )}
 
+      {polyline && locations && locations.length > 1 && (
+        <Polyline
+          positions={locations.map((loc) => loc.position)}
+          pathOptions={{ color: "#e84393", dashArray: "12,0" }}
+        />
+      )}
+
       <ClickHandler
         onMapClick={(latlng) => {
           setClickedPos(latlng);
-          setLocation(latlng);
+          if (setLocation) setLocation(latlng);
         }}
       />
+
       <Recenter latlng={location} />
       <PanTo latlng={clickedPos} />
-      <GeoSearch setLocation={setLocation} />
+      {setLocation && <GeoSearch setLocation={setLocation} />}
     </MapContainer>
   );
 }

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     return new Response("Thêm điểm đến thành công", { status: 201 });
   }
 
-  const destination = await Destination.create(body);
+  const destination = await Destination.create({ ...body, ma_tour: undefined });
   await TourDes.create({
     ma_tour: destination.ma_tour,
     ma_dia_diem: destination._id,

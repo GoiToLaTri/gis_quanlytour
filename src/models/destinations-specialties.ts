@@ -1,15 +1,22 @@
 import { model, models, Schema } from "mongoose";
 
-const destinationsSpecialtiesSchema = new Schema(
+const destinationsSpecialtySchema = new Schema(
   {
-    maDS: { type: Schema.Types.ObjectId, required: true },
-    maDD: { type: Schema.Types.ObjectId, required: true },
+    ma_dac_san: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Specialty",
+    },
+    ma_dia_diem: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Destination",
+    },
   },
-  { collection: "destination-specialty" },
+  { collection: "des-spec" },
 );
 
 const DestinationsSpecialties =
-  models["destination-specialty"] ||
-  model("destination-specialty", destinationsSpecialtiesSchema);
+  models["des-spec"] || model("des-spec", destinationsSpecialtySchema);
 
 export default DestinationsSpecialties;

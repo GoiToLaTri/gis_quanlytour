@@ -42,9 +42,7 @@ export default function Specialty() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [destinations, setDestinations] = useState<Array<object>>([]);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
-  const [selectedDestination, setSelectedDestination] = useState<any>(
-    null,
-  );
+  const [selectedDestination, setSelectedDestination] = useState<any>(null);
   const [selectedSpecialty, setSelectedSpecialty] = useState<any>(null);
   const handleSetLocation = useCallback((loc: LatLngExpression | null) => {
     setLocation(loc);
@@ -101,8 +99,8 @@ export default function Specialty() {
           {loading && <Spin size="default" />}
           {destinations.length > 0 && (
             <span className="text-sm">
-              {selectedSpecialty?.ten} được tìm thấy ở {destinations.length}{" "}
-              địa điểm
+              {selectedSpecialty?.ten} được tìm thấy ở {destinations.length} địa
+              điểm
             </span>
           )}
           {destinations.length > 0 &&
@@ -112,13 +110,20 @@ export default function Specialty() {
                   key={index}
                   onClick={(e) => {
                     setSelectedDestination(destination);
-                    handleSetLocation({ lat: destination?.kinh_do, lng: destination?.vi_do });
+                    handleSetLocation({
+                      lat: destination?.kinh_do,
+                      lng: destination?.vi_do,
+                    });
                   }}
                   className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}
                 >
                   <div className="flex items-center justify-between">
-                    <span>{destination.ten}, {destination.dia_chi}</span>
-                    <span className="text-xs">({destination.kinh_do}, {destination.vi_do})</span>
+                    <span>
+                      {destination.ten}, {destination.dia_chi}
+                    </span>
+                    <span className="text-xs">
+                      ({destination.kinh_do}, {destination.vi_do})
+                    </span>
                   </div>
                 </div>
               );

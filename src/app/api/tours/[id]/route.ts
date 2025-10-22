@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     await connect();
@@ -47,7 +47,7 @@ export async function GET(
     if (!tour.length) {
       return NextResponse.json(
         { message: "Không tìm thấy tour" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

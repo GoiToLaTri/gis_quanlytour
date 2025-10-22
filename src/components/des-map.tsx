@@ -82,7 +82,7 @@ export default function DesMap({
   useEffect(() => {
     setClickedPos(location);
   }, [location]);
-  console.log(locations);
+  
   return (
     <MapContainer
       center={position as LatLngExpression}

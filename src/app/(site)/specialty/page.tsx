@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useState, useCallback } from "react";
-import DesMap from "@/components/des-map";
+import dynamic from 'next/dynamic';
 import { LatLngExpression } from "leaflet";
 import type { AutoCompleteProps } from "antd";
 import { AutoComplete, Input, Spin } from "antd";
@@ -34,6 +34,14 @@ const searchSpecialtyInDestination = async (query: string) => {
     console.log("Lỗi:", error.message);
   }
 };
+
+const DesMap = dynamic(
+  () => import('@/components/des-map'),
+  {
+    ssr: false,
+    loading: () => <p>Đang tải bản đồ...</p>
+  }
+);
 
 export default function Specialty() {
   const [location, setLocation] = useState<LatLngExpression | null>(null);

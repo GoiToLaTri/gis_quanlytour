@@ -43,3 +43,9 @@ export async function POST(req: NextRequest) {
 
   return new Response("Thêm điểm đến thành công", { status: 201 });
 }
+
+export async function GET(req: NextRequest) {
+  await connect();
+  const destination = await Destination.find({});
+  return NextResponse.json(JSON.stringify(destination), { status: 200 });
+}

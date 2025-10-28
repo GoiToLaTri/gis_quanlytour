@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
   const destination = await Destination.create({ ...body, ma_tour: undefined });
   await TourDes.create({
-    ma_tour: destination.ma_tour,
+    ma_tour: body.ma_tour,
     ma_dia_diem: destination._id,
     diem_den: body.diem_den || false,
     diem_khoi_hanh: body.diem_khoi_hanh || false,

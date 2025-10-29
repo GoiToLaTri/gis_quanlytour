@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { QueryKeys } from "@/enums";
 import { useQuery } from "@tanstack/react-query";
@@ -7,15 +7,12 @@ import axios from "axios";
 import Link from "next/link";
 
 export default function Destination() {
-
   const { data: dest, isLoading } = useQuery({
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
       const res = await axios.get("/api/destination");
       return JSON.parse(res.data);
     },
-
-  
   });
   if (dest) {
     console.log(dest[0]);
@@ -31,7 +28,7 @@ export default function Destination() {
           className="!w-[600px]"
           itemLayout="horizontal"
           dataSource={dest}
-          renderItem={(dest: { _id: string; ten: string; dia_chi: string; }) => (
+          renderItem={(dest: { _id: string; ten: string; dia_chi: string }) => (
             <List.Item
               actions={[
                 <Link key={dest._id} href={`/destination/${dest._id}`}>

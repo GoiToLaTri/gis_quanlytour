@@ -20,10 +20,12 @@ export default function AddDestinationForm({
   long,
   lat,
   tour_id,
+  locationDetails,
 }: {
   long: number;
   lat: number;
   tour_id?: string;
+  locationDetails: { name: string; address: string } | null;
 }) {
   // const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
@@ -68,7 +70,7 @@ export default function AddDestinationForm({
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo,
+    errorInfo
   ) => {
     console.log("Failed:", errorInfo);
   };
@@ -81,8 +83,10 @@ export default function AddDestinationForm({
       ma_tour: tour_id,
       kinh_do: long,
       vi_do: lat,
+      ten: locationDetails?.name || "",
+      dia_chi: locationDetails?.address || "",
     });
-  }, [long, lat, tour_id, form]);
+  }, [long, lat, tour_id, form, locationDetails]);
 
   return (
     <Form

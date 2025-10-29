@@ -12,9 +12,9 @@ export default function LinkButton({
     <Button
       type="text"
       className={`!font-semibold ${
-        action ? "!bg-[#E8DEF8]" : ""
+        action ? "!bg-gray-200" : ""
       } !text-[#4A4459]`}
-      shape="round"
+      // shape="round"
       size="large"
     >
       {children}

@@ -16,6 +16,9 @@ import "leaflet-control-geocoder/Control.Geocoder.css";
 import "leaflet-control-geocoder/style.css";
 import GeoSearch from "./geosearch";
 
+import { GeoJSON } from "react-leaflet";
+import { FeatureCollection } from "geojson";
+
 // Sửa lỗi icon mặc định không hiển thị trong Next.js
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -62,7 +65,7 @@ function PanTo({ latlng }: { latlng: LatLngExpression | null }) {
 
 export default function DesMap({
   position = [10.78, 106.7] as LatLngExpression,
-  zoom = 12,
+  zoom = 6,
   location,
   setLocation,
   locations,
@@ -79,6 +82,14 @@ export default function DesMap({
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
   // Đồng bộ marker với location prop từ cha
 
+  const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
+  // Load GeoJSON data
+  useEffect(() => {
+    fetch("/VNM_adm1.json")
+      .then((res) => res.json())
+      .then((data) => setGeoData(data));
+  }, []);
+
   useEffect(() => {
     setClickedPos(location);
   }, [location]);
@@ -94,6 +105,26 @@ export default function DesMap({
         attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
         url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`}
       />
+
+      {/* Draw polygons from GeoJSON */}
+      {geoData && (
+        <GeoJSON
+          data={geoData}
+          style={() => ({
+            color: "#2980b9",
+            weight: 2,
+            fillOpacity: 0.2,
+          })}
+           onEachFeature={(feature, layer) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const props = (feature as any).properties || {};
+            const name = props.NAME_1 || props.name || "Unknown";
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (layer as any).bindPopup(`<strong>${name}</strong>`);
+          }}
+        />
+      )}
+
       {locations &&
         locations.map((loc, i) => (
           <Marker key={i} position={loc.position as LatLngExpression}>

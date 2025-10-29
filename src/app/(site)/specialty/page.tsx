@@ -46,12 +46,24 @@ const DesMap = dynamic(
 export default function Specialty() {
   const [location, setLocation] = useState<LatLngExpression | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [specialties, setSpecialties] = useState<Array<object>>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [destinations, setDestinations] = useState<Array<object>>([]);
   const [options, setOptions] = useState<AutoCompleteProps["options"]>([]);
+
+  // Lưu kết quả tìm kiếm đặc sản để gắn qua options
+  const [specialties, setSpecialties] = useState<Array<object>>([]);
+
+  // Lấy ra id của đặc sản được chọn khi click vào option
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Lưu danh sách địa điểm tìm thấy đặc sản
+  const [destinations, setDestinations] = useState<Array<object>>([]);
+
+
+  // Lưu thông tin địa điểm được chọn khi người dùng click vào địa điểm
   const [selectedDestination, setSelectedDestination] = useState<any>(null);
+
+  // Lưu thông tin đặc sản được chọn khi người dùng click vào option
   const [selectedSpecialty, setSelectedSpecialty] = useState<any>(null);
+
   const handleSetLocation = useCallback((loc: LatLngExpression | null) => {
     setLocation(loc);
   }, []);

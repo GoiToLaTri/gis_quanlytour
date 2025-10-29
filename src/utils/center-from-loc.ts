@@ -1,5 +1,5 @@
 export function getCenterFromLocations(
-  locations: [number, number][]
+  locations: [number, number][],
 ): [number, number] | null {
   if (!locations || locations.length === 0) return null;
 

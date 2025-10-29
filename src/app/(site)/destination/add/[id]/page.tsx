@@ -29,7 +29,7 @@ export default function AddDestination() {
     if (!data) return;
     const des_data = data.destinations.map((dest: { _id: string }) => {
       const link = data.tour_dest_links.find(
-        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id
+        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id,
       );
       return {
         ...dest,
@@ -91,8 +91,8 @@ export default function AddDestination() {
         (des: { kinh_do: number; vi_do: number; ten: string }) => [
           des.vi_do,
           des.kinh_do,
-        ]
-      )
+        ],
+      ),
     ) as LatLngExpression;
   }, [data]);
 
@@ -197,7 +197,7 @@ export default function AddDestination() {
               (des: { kinh_do: number; vi_do: number; ten: string }) => ({
                 position: [des.vi_do, des.kinh_do],
                 name: des.ten,
-              })
+              }),
             )
           }
         />

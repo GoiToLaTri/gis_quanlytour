@@ -157,8 +157,8 @@ export default function Specialty() {
                   onClick={(e) => {
                     setSelectedDestination(destination);
                     handleSetLocation({
-                      lat: destination?.kinh_do,
-                      lng: destination?.vi_do,
+                      lat: destination?.vi_do,
+                      lng: destination?.kinh_do,
                     });
                   }}
                   className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}
@@ -184,7 +184,7 @@ export default function Specialty() {
         </div>
       </div>
       <div className="grow-1 min-h-150 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} />
+        <DesMap location={location} setLocation={handleSetLocation} locations={location !== null ? [{ position: location, name: selectedDestination.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined} />
       </div>
     </div>
   );

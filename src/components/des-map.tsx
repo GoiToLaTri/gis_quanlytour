@@ -173,6 +173,7 @@ export default function DesMap({
     name: string;
     diem_khoi_hanh: boolean;
     diem_den: boolean;
+    dac_san?: any
   }>;
   polyline?: boolean;
 }) {

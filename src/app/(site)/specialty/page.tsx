@@ -105,10 +105,11 @@ export default function Specialty() {
 
   return (
     <div className="flex gap-2">
-      <div className="w-3/10 flex flex-col">
+      <div className="w-3/10 flex mr-5 flex-col">
         <Input.Search
           allowClear
           value={query}
+          variant="filled"
           onChange={async (event) => {
             // Two way binding
             const value = event.target.value;
@@ -140,7 +141,7 @@ export default function Specialty() {
           placeholder="Nhập tên đặc sản"
         />
         <div
-          className={`border grow-1 border-gray-300 ${loading || destinations.length === 0 ? "flex flex-col items-center justify-center" : ""} rounded-lg p-4 mt-4`}
+          className={`border grow-1 border-gray-300 ${loading || destinations.length === 0 ? "flex flex-col items-center justify-center" : ""} rounded-lg p-4 mt-4 overflow-y-auto h-100`}
         >
           {loading && <Spin size="default" />}
           {destinations.length > 0 && !loading && (

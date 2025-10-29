@@ -29,7 +29,7 @@ export default function AddDestination() {
     if (!data) return;
     const des_data = data.destinations.map((dest: { _id: string }) => {
       const link = data.tour_dest_links.find(
-        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id,
+        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id
       );
       return {
         ...dest,
@@ -82,6 +82,19 @@ export default function AddDestination() {
     setLocation(loc);
   }, []);
 
+  const [locationDetails, setLocationDetails] = useState<{
+    name: string;
+    address: string;
+  } | null>(null);
+  const handleSetLocationDetails = useCallback(
+    (details: { name: string; address: string }) => {
+      setLocationDetails(details);
+    },
+    []
+  );
+
+  console.log(locationDetails);
+
   const { lat, long } = getCoords(location);
   const center = useMemo(() => {
     if (!data || data.destinations.length === 0)
@@ -91,8 +104,8 @@ export default function AddDestination() {
         (des: { kinh_do: number; vi_do: number; ten: string }) => [
           des.vi_do,
           des.kinh_do,
-        ],
-      ),
+        ]
+      )
     ) as LatLngExpression;
   }, [data]);
 
@@ -101,7 +114,12 @@ export default function AddDestination() {
       {contextHolder}
       <div className="w-[600px] h-full overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Thêm điểm tham quan</h2>
-        <AddDestinationForm long={long} lat={lat} tour_id={params.id} />
+        <AddDestinationForm
+          long={long}
+          lat={lat}
+          tour_id={params.id}
+          locationDetails={locationDetails}
+        />
         <h4 className="text-2xl font-bold mb-4">Danh sách địa điểm đã thêm</h4>
         {isLoading && <div>Đang lấy danh sách địa điểm...</div>}
 
@@ -191,13 +209,14 @@ export default function AddDestination() {
           position={center}
           location={location}
           setLocation={handleSetLocation}
+          setLocationDetails={handleSetLocationDetails}
           locations={
             data &&
             data.destinations.map(
               (des: { kinh_do: number; vi_do: number; ten: string }) => ({
                 position: [des.vi_do, des.kinh_do],
                 name: des.ten,
-              }),
+              })
             )
           }
         />

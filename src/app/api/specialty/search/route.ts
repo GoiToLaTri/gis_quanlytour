@@ -6,12 +6,12 @@ export async function POST(req: NextRequest) {
   const { query } = await req.json();
   try {
     await connect();
-    const specialties = await Specialties.find({
+    const specialties = await Specialties.findOne({
       ten: { $regex: query, $options: "i" },
     });
     return NextResponse.json(specialties, { status: 200 });
   } catch (error: any) {
     console.log(error);
-    return new Response("Failed to create tour", { status: 500 });
+    return new Response("Failed to find specialty", { status: 500 });
   }
 }

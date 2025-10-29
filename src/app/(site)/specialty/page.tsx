@@ -9,7 +9,7 @@ import { AutoComplete, Input, Spin } from "antd";
 const searchSpecialties = async (query: string) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/search-specialty",
+      "http://localhost:3000/api/specialty/search",
       { query },
     );
     if (response.status === 200) {
@@ -24,7 +24,7 @@ const searchSpecialtyInDestination = async (query: string) => {
   console.log(query);
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/search-specialty-in-destination",
+      "http://localhost:3000/api/specialty/search-destination",
       { specialtyId: query },
     );
     if (response.status === 200) {

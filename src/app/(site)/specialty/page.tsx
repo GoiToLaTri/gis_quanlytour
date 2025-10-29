@@ -185,7 +185,7 @@ export default function Specialty() {
         </div>
       </div>
       <div className="grow-1 min-h-150 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} locations={location !== null ? [{ position: location, name: selectedDestination.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined} />
+        <DesMap location={location} setLocation={handleSetLocation} locations={location !== null ? [{ position: location, name: selectedDestination?.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined} />
       </div>
     </div>
   );

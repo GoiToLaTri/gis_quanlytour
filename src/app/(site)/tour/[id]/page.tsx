@@ -33,6 +33,7 @@ export default function TourDetail() {
     queryKey: [QueryKeys.TOUR_DETAIL],
     queryFn: async () => {
       const res = await axios.get(`/api/tours/${params.id}`);
+      console.log(res);
       return res.data;
     },
   });
@@ -41,7 +42,7 @@ export default function TourDetail() {
     if (!data) return;
     const des_data = data.destinations.map((dest: { _id: string }) => {
       const link = data.tour_dest_links.find(
-        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id,
+        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id
       );
       return {
         ...dest,
@@ -62,10 +63,9 @@ export default function TourDetail() {
             (des: { kinh_do: number; vi_do: number; ten: string }) => [
               des.vi_do,
               des.kinh_do,
-            ],
-          ),
+            ]
+          )
         );
-  console.log(data);
   return (
     <div className="flex gap-4 h-full">
       {isLoading && <div className="w-[600px]">Đang lấy thông tin tour...</div>}
@@ -147,12 +147,20 @@ export default function TourDetail() {
             location={null}
             // setLocation={() => {}}
             locations={
-              data &&
-              data.destinations.map(
-                (des: { kinh_do: number; vi_do: number; ten: string }) => ({
+              des &&
+              des.map(
+                (des: {
+                  kinh_do: number;
+                  vi_do: number;
+                  ten: string;
+                  diem_khoi_hanh: boolean;
+                  diem_den: boolean;
+                }) => ({
                   position: [des.vi_do, des.kinh_do],
                   name: des.ten,
-                }),
+                  diem_khoi_hanh: des.diem_khoi_hanh,
+                  diem_den: des.diem_den,
+                })
               )
             }
           />

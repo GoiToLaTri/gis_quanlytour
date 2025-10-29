@@ -5,8 +5,10 @@ import "leaflet-geosearch/assets/css/leaflet.css";
 
 export default function GeoSearch({
   setLocation,
+  setLocationDetails,
 }: {
   setLocation: (loc: [number, number]) => void;
+  setLocationDetails: (details: { name: string; address: string }) => void;
 }) {
   const map = useMap();
   useEffect(() => {
@@ -22,14 +24,19 @@ export default function GeoSearch({
     // Khi chọn kết quả
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     map.on("geosearch/showlocation", function (e: any) {
-      const { x, y } = e.location;
+      console.log(e);
+      const { x, y, raw } = e.location;
       setLocation([y, x]); // cập nhật state cha
+      setLocationDetails({
+        name: raw.name,
+        address: raw.display_name,
+      });
     });
     map.addControl(searchControl);
     return () => {
       map.removeControl(searchControl);
     };
-  }, [map, setLocation]);
+  }, [map, setLocation, setLocationDetails]);
 
   return null;
 }

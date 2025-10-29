@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { List } from "antd";
 import axios from "axios";
 import Link from "next/link";
-import { CgSlack } from "react-icons/cg";
 
 export default function Destination() {
   const { data: dest, isLoading } = useQuery({

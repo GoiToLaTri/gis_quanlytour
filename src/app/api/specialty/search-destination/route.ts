@@ -9,14 +9,14 @@ export async function POST(req: NextRequest) {
   try {
     await connect();
     const destinationSpecialty = await DestinationsSpecialties.find({
-      maDS: new mongoose.Types.ObjectId(specialtyId),
+      ma_dac_san: new mongoose.Types.ObjectId(specialtyId),
     });
 
     if (destinationSpecialty.length === 0) {
       return NextResponse.json([], { status: 200 });
     }
     const destinationIds = destinationSpecialty.map(
-      (destination) => destination.maDD,
+      (destination) => destination.ma_dia_diem,
     );
 
     const foundDestinations = await Destination.find({

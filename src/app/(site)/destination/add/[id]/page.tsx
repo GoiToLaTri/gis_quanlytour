@@ -144,46 +144,7 @@ export default function AddDestination() {
             )}
           />
         )}
-        {/* {!isLoading &&
-          data.destinations
-            .map((dest: { _id: string }) => {
-              const link = data.tour_dest_links.find(
-                (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id
-              );
-              return {
-                ...dest,
-                link_id: link._id,
-                diem_den: link?.diem_den ?? false,
-                diem_khoi_hanh: link?.diem_khoi_hanh ?? false,
-              };
-            })
-            .map(
-              (md: {
-                _id: string;
-                ten: string;
-                link_id: string;
-                dia_chi: string;
-                kinh_do: number;
-                vi_do: number;
-                diem_den: boolean;
-                diem_khoi_hanh: boolean;
-              }) => (
-                <div key={md.link_id}>
-                  {md.ten} - {md.dia_chi} - {md.diem_den && "Điểm đến"}
-                  {md.diem_khoi_hanh && "Điểm khởi hành"}
-                  {!md.diem_den && !md.diem_khoi_hanh && "Điểm tham quan"}
-                  <div>
-                    {md.kinh_do} - {md.vi_do}{" "}
-                    <Button
-                      type="link"
-                      onClick={() => mutation.mutate(md.link_id)}
-                    >
-                      Xóa
-                    </Button>
-                  </div>
-                </div>
-              )
-            )} */}
+
       </div>
       <div className="w-full">
         {/* <DesMap /> */}

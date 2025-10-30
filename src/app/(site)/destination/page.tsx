@@ -18,7 +18,7 @@ export default function Destination() {
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
       const res = await axios.get("/api/destination");
-      return JSON.parse(res.data);
+      return res.data;
     },
   });
   const DesMap = dynamic(
@@ -28,9 +28,7 @@ export default function Destination() {
       loading: () => <p>Đang tải bản đồ...</p>
     }
   );
-  if (dest) {
-    console.log(dest[0]);
-  }
+
   return (
     <div className="flex gap-6">
       <div className="flex flex-col w-3/10">
@@ -39,10 +37,9 @@ export default function Destination() {
         {!isLoading && dest && dest.length === 0 && <p>Chưa có điểm đến nào</p>}
         {dest && dest.length > 0 && (
           <List
-            className=""
             itemLayout="horizontal"
             dataSource={dest}
-            renderItem={(dest: { _id: string; ten: string; dia_chi: string; }) => (
+            renderItem={(dest: { _id: string, ten_dia_diem: string; ten_tour: string; dia_chi: string; }) => (
               <List.Item
                 actions={[
                   <Link key={dest._id} href={`/specialty/add/${dest._id}`}>
@@ -51,10 +48,10 @@ export default function Destination() {
                 ]}
               >
                 <List.Item.Meta
-                  title={<strong>{dest.ten}</strong>}
+                  title={<strong>{dest.ten_dia_diem}</strong>}
                   description={
                     <>
-                      <div>Mã: {dest._id}</div>
+                      <div>Thuộc: {dest.ten_tour}</div>
                       <div>Địa chỉ: {dest.dia_chi}</div>
                     </>
                   }

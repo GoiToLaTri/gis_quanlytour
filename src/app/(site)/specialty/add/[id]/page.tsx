@@ -21,7 +21,6 @@ export default function AddSpecialty() {
     const [location, setLocation] = useState<LatLngExpression | null>(null);
     const queryClient = useQueryClient();
 
-    const [loading, setLoading] = useState<boolean>(false);
     const [messageApi, contextHolder] = message.useMessage();
     const handleSetLocation = useCallback((loc: LatLngExpression | null) => { setLocation(loc); }, []);
     const [spct, setspct] = useState([]);
@@ -30,8 +29,6 @@ export default function AddSpecialty() {
         queryKey: [QueryKeys.SPECIALTY],
         queryFn: async () => {
             const res = await axios.get(`/api/destination/${params.id}/specialties`);
-            console.log("Specialties:", res.data);
-    
             return res.data;
         },
         
@@ -41,6 +38,7 @@ export default function AddSpecialty() {
         // setIsLoading(true);
         // setIsDisable(true);
         const res = await axios.delete(`/api/specialty/${id}`);
+        // console.log(res.data);
         return res.data;
         },
         onSuccess: () => {
@@ -65,6 +63,7 @@ export default function AddSpecialty() {
     });   
 
     const { lat, long } = getCoords(location);  
+    console.log(data);
 
     return (
         <div className="flex gap-6">
@@ -81,7 +80,6 @@ export default function AddSpecialty() {
                         itemLayout="horizontal"
                         dataSource={data}
                         renderItem={(des: {
-                            _id: string;
                             ten: string;
                             link_id: string;
 
@@ -91,17 +89,13 @@ export default function AddSpecialty() {
                                     <Button
                                         type="link"
                                         key={des.link_id}
-                                        onClick={() => mutation.mutate(des._id)}
+                                        onClick={() => mutation.mutate(des.link_id)}
                                     >
                                         Xóa
                                     </Button>,
                                 ]}
                             >
-                                <List.Item.Meta
-                                    title={`${des.ten} `}
-                                    description={`${des._id} `}
-                                />
-
+                                <List.Item.Meta title={`${des.ten} `}/>
                             </List.Item>
                         )}
                     />

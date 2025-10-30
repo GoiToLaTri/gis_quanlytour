@@ -38,10 +38,11 @@ export async function POST(req: NextRequest) {
     return new Response("Lỗi không thể thêm đặc sản mới",{status: 500});
   }
 }
-export async function GET(req: Request, {params}: {params: {id :string}} ) { 
+export async function GET(req: Request, context: { params: Promise<{ id: string }> } ) { 
   try { 
+    const { id } = await context.params;
     await connect();
-    const desSpec = await DestinationsSpecialties.find({ ma_dia_diem: params.id, })
+    const desSpec = await DestinationsSpecialties.find({ ma_dia_diem: id, })
     .populate("ma_dac_san");
 
     const specialties = desSpec.map((ds)=> ({

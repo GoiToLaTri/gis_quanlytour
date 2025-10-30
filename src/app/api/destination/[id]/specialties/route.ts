@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Specialty from '@/models/specialty';
 import connect from '@/lib/mongodb';
 import DestinationsSpecialties from '@/models/destinations-specialties';
+// import { Specialties } from '@/models/specialty';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -37,11 +38,18 @@ export async function POST(req: NextRequest) {
     return new Response("Lỗi không thể thêm đặc sản mới",{status: 500});
   }
 }
-export async function GET(req: Request) { 
+export async function GET(req: Request, {params}: {params: {id :string}} ) { 
   try { 
     await connect();
-    const specialties = await Specialty.find({});
-    return NextResponse.json(JSON.stringify(specialties));
+    const desSpec = await DestinationsSpecialties.find({ ma_dia_diem: params.id, })
+    .populate("ma_dac_san");
+
+    const specialties = desSpec.map((ds)=> ({
+      _id: ds.ma_dac_san._id,
+      ten: ds.ma_dac_san.ten,
+      link_id: ds._id,
+    }));
+    return NextResponse.json(specialties);
 
     } catch (error: any) {
       console.log(error);

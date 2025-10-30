@@ -30,16 +30,17 @@ export default function AddSpecialty() {
         queryKey: [QueryKeys.SPECIALTY],
         queryFn: async () => {
             const res = await axios.get(`/api/destination/${params.id}/specialties`);
-            return JSON.parse(res.data);
-
+            console.log("Specialties:", res.data);
+    
+            return res.data;
         },
-
+        
     });
     const mutation = useMutation({
         mutationFn: async (id: string) => {
         // setIsLoading(true);
         // setIsDisable(true);
-        const res = await axios.delete(`/api/destination/${id}/specialties`);
+        const res = await axios.delete(`/api/specialty/${id}`);
         return res.data;
         },
         onSuccess: () => {
@@ -90,7 +91,7 @@ export default function AddSpecialty() {
                                     <Button
                                         type="link"
                                         key={des.link_id}
-                                        onClick={() => mutation.mutate(des.link_id)}
+                                        onClick={() => mutation.mutate(des._id)}
                                     >
                                         Xóa
                                     </Button>,

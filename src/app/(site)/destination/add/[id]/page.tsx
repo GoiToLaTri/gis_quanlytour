@@ -93,7 +93,7 @@ export default function AddDestination() {
     []
   );
 
-  console.log(locationDetails);
+  // console.log(locationDetails);
 
   const { lat, long } = getCoords(location);
   const center = useMemo(() => {

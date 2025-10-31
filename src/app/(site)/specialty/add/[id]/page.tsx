@@ -66,9 +66,9 @@ export default function AddSpecialty() {
     console.log(data);
 
     return (
-        <div className="flex gap-6">
+        <div className="flex h-full gap-6">
             {contextHolder}
-            <div className="flex flex-col w-3/10">
+            <div className="flex flex-col overflow-y-auto w-3/10">
                 <h2 className="text-2xl font-bold mb-4">Thêm đặc sản mới</h2>
                 <AddSpecialtyForm long={long} lat={lat} dia_diem_id={params.id} />
                 <h4 className="text-2xl font-bold mb-4">Danh sách đặc sản đã thêm</h4>

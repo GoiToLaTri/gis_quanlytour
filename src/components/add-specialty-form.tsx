@@ -5,29 +5,25 @@ import { Button, Checkbox, Form, Input, InputNumber, message } from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { QueryKeys } from "@/enums";
+import { useParams } from "next/navigation";
 
 type FieldType = {
-  ma_tour?: string;
+  ma_dia_diem?: string;
   ten?: string;
-  dia_chi?: string;
-  kinh_do?: number;
-  vi_do?: number;
-  diem_den?: boolean;
-  diem_khoi_hanh?: boolean;
+
 };
 
-export default function AddDestinationForm({
+export default function AddSpecialtyForm({
   long,
   lat,
-  tour_id,
-  locationDetails,
+  dia_diem_id,
 }: {
   long: number;
   lat: number;
-  tour_id?: string;
-  locationDetails: { name: string; address: string } | null;
+  dia_diem_id?: string;
 }) {
   // const router = useRouter();
+  const params = useParams<{ id: string }>();
   const [messageApi, contextHolder] = message.useMessage();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisable, setIsDisable] = useState<boolean>(false);
@@ -37,7 +33,7 @@ export default function AddDestinationForm({
     mutationFn: async (data: FieldType) => {
       setIsLoading(true);
       setIsDisable(true);
-      const res = await axios.post("/api/destination", data);
+      const res = await axios.post(`/api/destination/${params.id}/specialties`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -45,11 +41,11 @@ export default function AddDestinationForm({
       setIsLoading(false);
       setIsDisable(false);
       queryClient.prefetchQuery({
-        queryKey: [QueryKeys.TOUR_DETAIL],
+        queryKey: [QueryKeys.SPECIALTY],
       });
       messageApi.open({
         type: "success",
-        content: "Thêm địa điểm thành công",
+        content: "Thêm đặc sản thành công",
       });
     },
     onError: (error) => {
@@ -70,7 +66,7 @@ export default function AddDestinationForm({
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
+    errorInfo,
   ) => {
     console.log("Failed:", errorInfo);
   };
@@ -80,13 +76,11 @@ export default function AddDestinationForm({
   // Cập nhật giá trị khi long/lat thay đổi
   useEffect(() => {
     form.setFieldsValue({
-      ma_tour: tour_id,
+      ma_dia_diem: dia_diem_id,
       kinh_do: long,
       vi_do: lat,
-      ten: locationDetails?.name || "",
-      dia_chi: locationDetails?.address || "",
     });
-  }, [long, lat, tour_id, form, locationDetails]);
+  }, [long, lat, dia_diem_id, form]);
 
   return (
     <Form
@@ -100,58 +94,19 @@ export default function AddDestinationForm({
     >
       {contextHolder}
       <Form.Item<FieldType>
-        label="Mã tour"
-        name="ma_tour"
-        rules={[{ required: true, message: "Vui lòng nhập mã tour!" }]}
+        label="Mã địa điểm"
+        name="ma_dia_diem"
+        rules={[{ required: true, message: "Vui lòng nhập mã địa điểm!" }]}
       >
         <Input disabled />
       </Form.Item>
 
       <Form.Item<FieldType>
-        label="Tên địa điểm"
+        label="Tên"
         name="ten"
-        rules={[{ required: true, message: "Vui lòng nhập tên địa điểm!" }]}
+        rules={[{ required: true, message: "Vui lòng nhập tên đặc sản!" }]}
       >
         <Input disabled={isDisable} />
-      </Form.Item>
-
-      <Form.Item<FieldType>
-        label="Địa chỉ"
-        name="dia_chi"
-        rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
-      >
-        <Input disabled={isDisable} />
-      </Form.Item>
-
-      <Form.Item<FieldType>
-        label="Kinh độ"
-        name="kinh_do"
-        rules={[{ required: true, message: "Vui lòng nhập kinh độ!" }]}
-      >
-        <InputNumber className="!w-full" min={0} disabled={isDisable} />
-      </Form.Item>
-
-      <Form.Item<FieldType>
-        label="Vi độ"
-        name="vi_do"
-        rules={[{ required: true, message: "Vui lòng nhập vi độ!" }]}
-      >
-        <InputNumber className="!w-full" min={0} disabled={isDisable} />
-      </Form.Item>
-
-      <Form.Item label={null}>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Form.Item<FieldType>
-            name="diem_khoi_hanh"
-            valuePropName="checked"
-            noStyle
-          >
-            <Checkbox>Điểm khởi hành</Checkbox>
-          </Form.Item>
-          <Form.Item<FieldType> name="diem_den" valuePropName="checked" noStyle>
-            <Checkbox>Điểm đến</Checkbox>
-          </Form.Item>
-        </div>
       </Form.Item>
 
       <Form.Item label={null}>
@@ -161,7 +116,7 @@ export default function AddDestinationForm({
           htmlType="submit"
           loading={isLoading}
         >
-          Thêm địa điểm
+          Thêm đặc sản
         </Button>
       </Form.Item>
     </Form>

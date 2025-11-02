@@ -3,12 +3,13 @@
 import Link from "next/link";
 import LinkButton from "./link-button";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { BsFillGeoAltFill } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
   return (
-    <div className="w-full flex justify-center bg-[#F3EDF7] py-4 gap-4 mb-4">
+    <div className="w-full flex justify-center bg-white border-b border-b-gray-200 py-4 gap-4 mb-4">
       <Link href={"/"}>
         <LinkButton action={pathname === "/"}>
           {pathname === "/" ? (
@@ -22,9 +23,9 @@ export default function Navbar() {
       <Link href={"/destination"}>
         <LinkButton action={pathname === "/destination"}>
           {pathname === "/destination" ? (
-            <StarFilled style={{ fontSize: 24 }} />
+            <BsFillGeoAltFill style={{ fontSize: 24 }} />
           ) : (
-            <StarOutlined style={{ fontSize: 24 }} />
+            <BsFillGeoAltFill style={{ fontSize: 24 }} />
           )}
           Quản lý địa điểm
         </LinkButton>

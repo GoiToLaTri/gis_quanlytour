@@ -46,6 +46,17 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   await connect();
-  const destination = await Destination.find({});
-  return NextResponse.json(JSON.stringify(destination), { status: 200 });
+  const desInf = await TourDes.find({ })
+  .populate("ma_tour")
+  .populate("ma_dia_diem");
+  
+  const destination = desInf.filter(item => item.ma_dia_diem && item.ma_tour)
+  .map((item) => ({
+    _id: item.ma_dia_diem?._id,
+    ten_tour: item.ma_tour?.ten ,
+    dia_chi: item.ma_dia_diem?.dia_chi,
+    ten_dia_diem: item.ma_dia_diem?.ten
+  }))
+
+  return NextResponse.json(destination, { status: 200 });
 }

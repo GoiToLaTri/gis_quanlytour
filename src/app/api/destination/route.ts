@@ -55,7 +55,9 @@ export async function GET(req: NextRequest) {
     _id: item.ma_dia_diem?._id,
     ten_tour: item.ma_tour?.ten ,
     dia_chi: item.ma_dia_diem?.dia_chi,
-    ten_dia_diem: item.ma_dia_diem?.ten
+    ten_dia_diem: item.ma_dia_diem?.ten,
+    kinh_do: item.ma_dia_diem?.kinh_do,
+    vi_do: item.ma_dia_diem?.vi_do
   }))
 
   return NextResponse.json(destination, { status: 200 });

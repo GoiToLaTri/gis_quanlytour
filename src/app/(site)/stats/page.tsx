@@ -15,7 +15,7 @@ export default function StatsPage() {
     const { data: data, isLoading: isLoading } = useQuery({
       queryKey: [QueryKeys.DESTINATION],
       queryFn: async () => {
-        const res = await axios.get("/api/destination");
+        const res = await axios.get("/api/stat_des");
         return JSON.parse(res.data);
       },
     });
@@ -111,20 +111,20 @@ export default function StatsPage() {
           dataSource={data}
           renderItem={(dest: { _id: string; ten: string; dia_chi: string; }) => (
             <List.Item
-              actions={[
-                <Link key={dest._id} href={`/destination/${dest._id}`}>
-                  Chi tiết
-                </Link>,
-                <Link key={dest._id} href={`/destination/add/${dest._id}`}>
-                  Thêm đặc sản
-                </Link>,
-              ]}
+              // actions={[
+              //   <Link key={dest._id} href={`/destination/${dest._id}`}>
+              //     Chi tiết
+              //   </Link>,
+              //   <Link key={dest._id} href={`/destination/add/${dest._id}`}>
+              //     Thêm đặc sản
+              //   </Link>,
+              // ]}
             >
               <List.Item.Meta
                 title={<strong>{dest.ten}</strong>}
                 description={
                   <>
-                    <div>Mã: {dest._id}</div>
+                    {/* <div>Mã: {dest._id}</div> */}
                     <div>Địa chỉ: {dest.dia_chi}</div>
                   </>
                 }

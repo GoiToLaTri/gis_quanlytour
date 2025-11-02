@@ -269,7 +269,7 @@ export default function DesMap({
 
       <Recenter latlng={location} />
       <PanTo latlng={clickedPos} />
-      {setLocation && <GeoSearch setLocation={setLocation} />}
+      {/* {setLocation && <GeoSearch setLocation={setLocation} />} */}
     </MapContainer>
   );
 }

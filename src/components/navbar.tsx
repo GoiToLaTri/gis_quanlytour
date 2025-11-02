@@ -40,6 +40,16 @@ export default function Navbar() {
           Quản lý đặc sản
         </LinkButton>
       </Link>
+      <Link href={"/stats"}>
+        <LinkButton action={pathname === "/stats"}>
+          {pathname === "/stas" ? (
+            <BsFillGeoAltFill style={{ fontSize: 24 }} />
+          ) : (
+            <BsFillGeoAltFill style={{ fontSize: 24 }} />
+          )}
+          Thống kê địa điểm
+        </LinkButton>
+      </Link>
     </div>
   );
 }

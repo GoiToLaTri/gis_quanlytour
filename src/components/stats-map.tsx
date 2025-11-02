@@ -2,7 +2,6 @@
 import {
   MapContainer,
   Marker,
-  Polyline,
   Popup,
   TileLayer,
   useMap,
@@ -14,7 +13,6 @@ import * as L from "leaflet";
 import { useEffect, useState, useMemo } from "react";
 import "leaflet-control-geocoder/Control.Geocoder.css";
 import "leaflet-control-geocoder/style.css";
-import GeoSearch from "./geosearch";
 
 import { GeoJSON } from "react-leaflet";
 import { FeatureCollection, Feature, Geometry } from "geojson";
@@ -65,28 +63,56 @@ function PanTo({ latlng }: { latlng: LatLngExpression | null }) {
 
 export default function DesMap({
   position = [10.78, 106.7] as LatLngExpression,
-  zoom = 6,
+  zoom = 5,
   location,
   setLocation,
   locations,
   polyline,
+  geoData,
+  regionStats,
+  selectedRegion,
+  onRegionClick,
 }: {
   position?: LatLngExpression;
   zoom?: number;
   location: LatLngExpression | null;
   setLocation?: (loc: LatLngExpression) => void;
-  locations?: Array<{ position: LatLngExpression; name: string }>;
+  locations?: Array<{ position: LatLngExpression; name: string; dia_chi: string }>;
   polyline?: boolean;
+  geoData: FeatureCollection | null;
+  regionStats: Map<string, number>;
+  selectedRegion: string | null;
+  onRegionClick: (regionName: string) => void;
 }) {
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
-  const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
 
-  // Load GeoJSON data
-  useEffect(() => {
-    fetch("/VNM_adm1.json")
-      .then((res) => res.json())
-      .then((data) => setGeoData(data));
-  }, []);
+
+
+    // Calculate center and zoom for selected region
+  const mapViewSettings = useMemo(() => {
+    if (selectedRegion && geoData) {
+      const feature = geoData.features.find(
+        (f) => ((f.properties as any)?.NAME_1 || (f.properties as any)?.name) === selectedRegion
+      );
+      
+      if (feature) {
+        const layer = L.geoJSON(feature);
+        const bounds = layer.getBounds();
+        const center = bounds.getCenter();
+        
+        return {
+          center: [center.lat, center.lng] as LatLngExpression,
+          zoom: 8, // Closer zoom level for selected region
+        };
+      }
+    }
+    
+    return {
+      center: position,
+      zoom: zoom,
+    };
+  }, [selectedRegion, geoData, position, zoom]);
+
 
   useEffect(() => {
     setClickedPos(location);
@@ -147,61 +173,23 @@ export default function DesMap({
     return isInside;
   };
 
-  
-  // Calculate destinations per region
-  const regionStats = useMemo(() => {
-    if (!geoData || !locations) return new Map<string, number>();
 
-    const stats = new Map<string, number>();
-
-    // Initialize all regions with 0
-    geoData.features.forEach((feature) => {
-      const name = (feature.properties as any)?.NAME_1 || (feature.properties as any)?.name || "Unknown";
-      stats.set(name, 0);
-    });
-
-    // Count destinations in each region
-    locations.forEach((loc) => {
-      const latLng = Array.isArray(loc.position)
-        ? L.latLng(loc.position[0], loc.position[1])
-        : L.latLng(loc.position as any);
-
-      geoData.features.forEach((feature) => {
-        const name = (feature.properties as any)?.NAME_1 || (feature.properties as any)?.name || "Unknown";
-        
-        // Check if point is inside polygon
-        if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-          const layer = L.geoJSON(feature as Feature<Geometry>);
-          const bounds = layer.getBounds();
-          
-          if (bounds.contains(latLng)) {
-            // More precise check using ray casting algorithm
-            if (isPointInPolygon(latLng, feature)) {
-              stats.set(name, (stats.get(name) || 0) + 1);
-            }
-          }
-        }
-      });
-    });
-
-    return stats;
-  }, [geoData, locations]);
 
 
 
   // Color scale based on destination count
   const getColorForCount = (count: number): string => {
-    if (count === 0) return "#e8f4f8";
-    if (count <= 2) return "#b3d9e8";
-    if (count <= 5) return "#7ebfd8";
-    if (count <= 10) return "#4aa5c8";
-    return "#1a8bb8";
+    if (count === 0) return "#F7FBFF";
+    if (count <= 2) return "#C8DDF0";
+    if (count <= 4) return "#73B3D8";
+    if (count <= 6) return "#2879B9";
+    return "#08306B";
   };
 
   return (
     <MapContainer
-      center={position as LatLngExpression}
-      zoom={zoom}
+      center={mapViewSettings.center}
+      zoom={mapViewSettings.zoom}
       scrollWheelZoom
       style={{ width: "100%", height: "100%" }}
     >
@@ -212,29 +200,85 @@ export default function DesMap({
 
       {/* Draw polygons from GeoJSON with dynamic colors */}
       {geoData && (
-        <GeoJSON
-          data={geoData}
-          style={(feature) => {
-            const name = (feature?.properties as any)?.NAME_1 || (feature?.properties as any)?.name || "Unknown";
-            const count = regionStats.get(name) || 0;
-            return {
-              color: "#2980b9",
-              weight: 2,
-              fillColor: getColorForCount(count),
-              fillOpacity: 0.6,
-            };
-          }}
-          onEachFeature={(feature, layer) => {
-            const props = (feature as any).properties || {};
-            const name = props.NAME_1 || props.name || "Unknown";
-            const count = regionStats.get(name) || 0;
-            (layer as any).bindPopup(`
-              <strong>${name}</strong><br/>
-              Số điểm đến: <strong>${count}</strong>
-            `);
-          }}
-        />
+        <>
+          {/* Draw all non-selected regions first */}
+          <GeoJSON
+            data={geoData}
+            style={(feature) => {
+              const name = (feature?.properties as any)?.NAME_1 || (feature?.properties as any)?.name || "Unknown";
+              const count = regionStats.get(name) || 0;
+              const isSelected = selectedRegion === name;
+              
+              // Don't render selected region in this layer
+              if (isSelected) {
+                return { stroke: false, fill: false };
+              }
+              
+              return {
+                color: "#2980b9",
+                weight: 2,
+                fillColor: getColorForCount(count),
+                fillOpacity: 0.6,
+              };
+            }}
+            onEachFeature={(feature, layer) => {
+              const props = (feature as any).properties || {};
+              const name = props.NAME_1 || props.name || "Unknown";
+              const count = regionStats.get(name) || 0;
+              
+              (layer as any).bindPopup(`
+                <strong>${name}</strong><br/>
+                Số điểm đến: <strong>${count}</strong>
+              `);
+
+              layer.on("click", () => {
+                onRegionClick(name);
+              });
+            }}
+          />
+          
+          {/* Draw selected region on top */}
+          {selectedRegion && (
+            <GeoJSON
+              key={selectedRegion} // Force re-render when selection changes
+              data={{
+                type: "FeatureCollection",
+                features: geoData.features.filter(
+                  (f) => ((f.properties as any)?.NAME_1 || (f.properties as any)?.name) === selectedRegion
+                ),
+              } as FeatureCollection}
+              style={(feature) => {
+                const name = (feature?.properties as any)?.NAME_1 || (feature?.properties as any)?.name || "Unknown";
+                const count = regionStats.get(name) || 0;
+                return {
+                  color: "#e74c3c",
+                  weight: 3,
+                  fillColor: getColorForCount(count),
+                  fillOpacity: 0.6,
+                };
+              }}
+              onEachFeature={(feature, layer) => {
+                const props = (feature as any).properties || {};
+                const name = props.NAME_1 || props.name || "Unknown";
+                const count = regionStats.get(name) || 0;
+                
+                (layer as any).bindPopup(`
+                  <strong>${name}</strong><br/>
+                  Số điểm đến: <strong>${count}</strong>
+                `);
+
+                layer.on("click", () => {
+                  onRegionClick(name);
+                });
+              }}
+            />
+          )}
+        </>
       )}
+
+
+
+
 
       {locations &&
         locations.map((loc, i) => (
@@ -242,12 +286,11 @@ export default function DesMap({
             <Popup>
               <b>{loc.name}</b>
               <br />
-              {loc.position.toString()}
+              {loc.dia_chi}
             </Popup>
           </Marker>
         ))}
 
-      {/* Khi click, hiển thị marker mới */}
       {clickedPos && (
         <Marker position={clickedPos}>
           <Popup>
@@ -267,9 +310,9 @@ export default function DesMap({
         }}
       />
 
-      <Recenter latlng={location} />
+      {/* Add this component to handle view changes */}
+      <Recenter latlng={selectedRegion ? mapViewSettings.center : location} />
       <PanTo latlng={clickedPos} />
-      {/* {setLocation && <GeoSearch setLocation={setLocation} />} */}
     </MapContainer>
   );
 }

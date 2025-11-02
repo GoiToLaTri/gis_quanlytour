@@ -205,7 +205,8 @@ export default function DesMap({
           return (
             <Marker key={i} position={loc.position} icon={icon}>
               <Popup>
-                {loc.name}
+                <h2>{loc.name}</h2>
+                <span>Đặc sản: {loc.dac_san && loc.dac_san.ten}</span>
                 <br />
                 {loc.diem_khoi_hanh && <strong>Điểm khởi hành</strong>}
                 {loc.diem_den && <strong>Điểm đến</strong>}

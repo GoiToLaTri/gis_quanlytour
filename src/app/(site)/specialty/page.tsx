@@ -10,7 +10,7 @@ const getAllDestination = async () => {
   try {
     const response = await axios.get("http://localhost:3000/api/destination");
     if (response.status === 200) {
-      return JSON.parse(response.data);
+      return response.data;
     }
   } catch (error: any) {
     console.log("Lỗi:", error.message);
@@ -76,13 +76,13 @@ export default function Specialty() {
   const fetchDestinations = async () => {
     const destinations = await getAllDestination();
     setDestinations(destinations);
+    setLoading(false);
   };
 
   // Tải tất cả địa điểm khi component được mount
   useEffect(() => {
     if (query === "") {
       fetchDestinations();
-      setLoading(false);
     }
   }, [query]);
 
@@ -111,16 +111,8 @@ export default function Specialty() {
           value={query}
           variant="filled"
           onChange={async (event) => {
-            // Two way binding
             const value = event.target.value;
             setQuery(value);
-
-            // Lưu thông tin đặc sản được tìm thấy
-            const specialty = await findSpecialty(value);
-            setSpecialty(specialty);
-
-            // Tìm kiếm địa điểm theo id đặc sản
-            await fetchDestinationBySpecialty(specialty?._id);
           }}
           onSearch={async () => {
             // Lưu thông tin đặc sản được tìm thấy
@@ -141,17 +133,18 @@ export default function Specialty() {
           placeholder="Nhập tên đặc sản"
         />
         <div
-          className={`border grow-1 border-gray-300 ${loading || destinations.length === 0 ? "flex flex-col items-center justify-center" : ""} rounded-lg p-4 mt-4 overflow-y-auto h-100`}
+          className={`border grow-1 border-gray-300 ${loading || destinations?.length === 0 ? "flex flex-col items-center justify-center" : ""} rounded-lg p-4 mt-4 overflow-y-auto h-100`}
         >
           {loading && <Spin size="default" />}
-          {destinations.length > 0 && !loading && (
+          {destinations?.length > 0 && !loading && (
             <span className="text-sm">
               Xuất hiện {destinations.length} kết quả
             </span>
           )}
-          {destinations.length > 0 &&
+          {destinations?.length > 0 &&
             !loading &&
             destinations.map((destination: any, index) => {
+              console.log('Destination:', destination);
               return (
                 <div
                   key={index}
@@ -167,7 +160,7 @@ export default function Specialty() {
                   <div className="flex items-center justify-between">
                     <div className="w-2/3 mr-5 text-sm">
                       <span className="line-clamp-1">
-                        {destination.ten}, {destination.dia_chi}
+                        {destination.dia_chi}
                       </span>
                     </div>
                     <div className="flex-1">
@@ -179,13 +172,15 @@ export default function Specialty() {
                 </div>
               );
             })}
-          {destinations.length === 0 && !loading && (
+          {destinations?.length === 0 && !loading && (
             <span className="text-sm">Không tìm thấy kết quả</span>
           )}
         </div>
       </div>
       <div className="grow-1 min-h-150 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} locations={location !== null ? [{ position: location, name: selectedDestination?.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined} />
+        <DesMap location={location} setLocation={handleSetLocation}
+          locations={location !== null ? [{ position: location, name: selectedDestination?.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined}
+        />
       </div>
     </div>
   );

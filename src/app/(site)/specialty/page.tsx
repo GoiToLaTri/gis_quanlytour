@@ -126,6 +126,7 @@ export default function Specialty() {
           size="large"
           onClear={async () => {
             setQuery("");
+            setSpecialty(null);
 
             // Tải lại tất cả địa điểm
             await fetchDestinations();

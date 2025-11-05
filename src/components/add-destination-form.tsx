@@ -70,7 +70,7 @@ export default function AddDestinationForm({
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
+    errorInfo,
   ) => {
     console.log("Failed:", errorInfo);
   };

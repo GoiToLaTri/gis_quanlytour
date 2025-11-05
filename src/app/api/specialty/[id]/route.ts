@@ -10,7 +10,9 @@ export async function DELETE(
   try {
     const { id } = await context.params;
     await connect();
-    const des_spec = await DestinationsSpecialties.findById(new mongoose.Types.ObjectId(id));
+    const des_spec = await DestinationsSpecialties.findById(
+      new mongoose.Types.ObjectId(id),
+    );
     if (!des_spec)
       return new Response("Đặc sản không tồn tại", { status: 403 });
     await DestinationsSpecialties.findByIdAndDelete(des_spec._id);

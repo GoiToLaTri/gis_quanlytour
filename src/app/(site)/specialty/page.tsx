@@ -144,7 +144,6 @@ export default function Specialty() {
           {destinations?.length > 0 &&
             !loading &&
             destinations.map((destination: any, index) => {
-              console.log('Destination:', destination);
               return (
                 <div
                   key={index}
@@ -154,13 +153,17 @@ export default function Specialty() {
                       lat: destination?.vi_do,
                       lng: destination?.kinh_do,
                     });
+                    console.log("Đặc sản", specialty);
                   }}
                   className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="w-2/3 mr-5 text-sm">
                       <span className="line-clamp-1">
-                        {destination.dia_chi}
+                        Địa điểm: {destination.ten_dia_diem}
+                      </span>
+                      <span className="line-clamp-1">
+                        Địa chỉ: {destination.dia_chi}
                       </span>
                     </div>
                     <div className="flex-1">
@@ -178,8 +181,24 @@ export default function Specialty() {
         </div>
       </div>
       <div className="grow-1 min-h-150 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation}
-          locations={location !== null ? [{ position: location, name: selectedDestination?.ten, diem_khoi_hanh: false, diem_den: false, dac_san: specialty }] : undefined}
+        <DesMap
+          location={location}
+          setLocation={handleSetLocation}
+          locations={
+            location !== null
+              ? [
+                  {
+                    position: location,
+                    name:
+                      selectedDestination?.ten_dia_diem ||
+                      selectedDestination?.ten,
+                    diem_khoi_hanh: false,
+                    diem_den: false,
+                    dac_san: specialty,
+                  },
+                ]
+              : undefined
+          }
         />
       </div>
     </div>

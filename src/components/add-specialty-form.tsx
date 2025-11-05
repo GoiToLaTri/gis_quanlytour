@@ -10,7 +10,6 @@ import { useParams } from "next/navigation";
 type FieldType = {
   ma_dia_diem?: string;
   ten?: string;
-
 };
 
 export default function AddSpecialtyForm({
@@ -33,7 +32,10 @@ export default function AddSpecialtyForm({
     mutationFn: async (data: FieldType) => {
       setIsLoading(true);
       setIsDisable(true);
-      const res = await axios.post(`/api/destination/${params.id}/specialties`, data);
+      const res = await axios.post(
+        `/api/destination/${params.id}/specialties`,
+        data,
+      );
       return res.data;
     },
     onSuccess: () => {

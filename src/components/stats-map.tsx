@@ -77,7 +77,11 @@ export default function DesMap({
   zoom?: number;
   location: LatLngExpression | null;
   setLocation?: (loc: LatLngExpression) => void;
-  locations?: Array<{ position: LatLngExpression; name: string; dia_chi: string }>;
+  locations?: Array<{
+    position: LatLngExpression;
+    name: string;
+    dia_chi: string;
+  }>;
   polyline?: boolean;
   geoData: FeatureCollection | null;
   regionStats: Map<string, number>;
@@ -86,41 +90,42 @@ export default function DesMap({
 }) {
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
 
-
-
-    // Calculate center and zoom for selected region
+  // Calculate center and zoom for selected region
   const mapViewSettings = useMemo(() => {
     if (selectedRegion && geoData) {
       const feature = geoData.features.find(
-        (f) => ((f.properties as any)?.NAME_1 || (f.properties as any)?.name) === selectedRegion
+        (f) =>
+          ((f.properties as any)?.NAME_1 || (f.properties as any)?.name) ===
+          selectedRegion,
       );
-      
+
       if (feature) {
         const layer = L.geoJSON(feature);
         const bounds = layer.getBounds();
         const center = bounds.getCenter();
-        
+
         return {
           center: [center.lat, center.lng] as LatLngExpression,
           zoom: 8, // Closer zoom level for selected region
         };
       }
     }
-    
+
     return {
       center: position,
       zoom: zoom,
     };
   }, [selectedRegion, geoData, position, zoom]);
 
-
   useEffect(() => {
     setClickedPos(location);
   }, [location]);
 
-
-    // Helper function to check if point is in polygon
-  const isPointInPolygon = (point: L.LatLng, feature: Feature<Geometry>): boolean => {
+  // Helper function to check if point is in polygon
+  const isPointInPolygon = (
+    point: L.LatLng,
+    feature: Feature<Geometry>,
+  ): boolean => {
     const layer = L.geoJSON(feature);
     let isInside = false;
 
@@ -128,16 +133,19 @@ export default function DesMap({
       if (l instanceof L.Polygon) {
         const polygon = l as L.Polygon;
         const latLngs = polygon.getLatLngs();
-        
+
         // Check for MultiPolygon (array of arrays)
         const checkRing = (ring: L.LatLng[]) => {
           let inside = false;
           for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-            const xi = ring[i].lng, yi = ring[i].lat;
-            const xj = ring[j].lng, yj = ring[j].lat;
-            
-            const intersect = ((yi > point.lat) !== (yj > point.lat))
-              && (point.lng < (xj - xi) * (point.lat - yi) / (yj - yi) + xi);
+            const xi = ring[i].lng,
+              yi = ring[i].lat;
+            const xj = ring[j].lng,
+              yj = ring[j].lat;
+
+            const intersect =
+              yi > point.lat !== yj > point.lat &&
+              point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
             if (intersect) inside = !inside;
           }
           return inside;
@@ -173,10 +181,6 @@ export default function DesMap({
     return isInside;
   };
 
-
-
-
-
   // Color scale based on destination count
   const getColorForCount = (count: number): string => {
     if (count === 0) return "#F7FBFF";
@@ -205,15 +209,18 @@ export default function DesMap({
           <GeoJSON
             data={geoData}
             style={(feature) => {
-              const name = (feature?.properties as any)?.NAME_1 || (feature?.properties as any)?.name || "Unknown";
+              const name =
+                (feature?.properties as any)?.NAME_1 ||
+                (feature?.properties as any)?.name ||
+                "Unknown";
               const count = regionStats.get(name) || 0;
               const isSelected = selectedRegion === name;
-              
+
               // Don't render selected region in this layer
               if (isSelected) {
                 return { stroke: false, fill: false };
               }
-              
+
               return {
                 color: "#2980b9",
                 weight: 2,
@@ -225,7 +232,7 @@ export default function DesMap({
               const props = (feature as any).properties || {};
               const name = props.NAME_1 || props.name || "Unknown";
               const count = regionStats.get(name) || 0;
-              
+
               (layer as any).bindPopup(`
                 <strong>${name}</strong><br/>
                 Số điểm đến: <strong>${count}</strong>
@@ -236,19 +243,26 @@ export default function DesMap({
               });
             }}
           />
-          
+
           {/* Draw selected region on top */}
           {selectedRegion && (
             <GeoJSON
               key={selectedRegion} // Force re-render when selection changes
-              data={{
-                type: "FeatureCollection",
-                features: geoData.features.filter(
-                  (f) => ((f.properties as any)?.NAME_1 || (f.properties as any)?.name) === selectedRegion
-                ),
-              } as FeatureCollection}
+              data={
+                {
+                  type: "FeatureCollection",
+                  features: geoData.features.filter(
+                    (f) =>
+                      ((f.properties as any)?.NAME_1 ||
+                        (f.properties as any)?.name) === selectedRegion,
+                  ),
+                } as FeatureCollection
+              }
               style={(feature) => {
-                const name = (feature?.properties as any)?.NAME_1 || (feature?.properties as any)?.name || "Unknown";
+                const name =
+                  (feature?.properties as any)?.NAME_1 ||
+                  (feature?.properties as any)?.name ||
+                  "Unknown";
                 const count = regionStats.get(name) || 0;
                 return {
                   color: "#e74c3c",
@@ -261,7 +275,7 @@ export default function DesMap({
                 const props = (feature as any).properties || {};
                 const name = props.NAME_1 || props.name || "Unknown";
                 const count = regionStats.get(name) || 0;
-                
+
                 (layer as any).bindPopup(`
                   <strong>${name}</strong><br/>
                   Số điểm đến: <strong>${count}</strong>
@@ -275,10 +289,6 @@ export default function DesMap({
           )}
         </>
       )}
-
-
-
-
 
       {locations &&
         locations.map((loc, i) => (

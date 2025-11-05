@@ -42,7 +42,7 @@ export default function TourDetail() {
     if (!data) return;
     const des_data = data.destinations.map((dest: { _id: string }) => {
       const link = data.tour_dest_links.find(
-        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id
+        (t: { ma_dia_diem: string }) => t.ma_dia_diem === dest._id,
       );
       return {
         ...dest,
@@ -63,8 +63,8 @@ export default function TourDetail() {
             (des: { kinh_do: number; vi_do: number; ten: string }) => [
               des.vi_do,
               des.kinh_do,
-            ]
-          )
+            ],
+          ),
         );
   return (
     <div className="flex gap-4 h-full">
@@ -160,7 +160,7 @@ export default function TourDetail() {
                   name: des.ten,
                   diem_khoi_hanh: des.diem_khoi_hanh,
                   diem_den: des.diem_den,
-                })
+                }),
               )
             }
           />

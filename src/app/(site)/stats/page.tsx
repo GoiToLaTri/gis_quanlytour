@@ -31,7 +31,10 @@ export default function StatsPage() {
   });
 
   // Helper function to check if point is in polygon
-  const isPointInPolygon = (point: L.LatLng, feature: Feature<Geometry>): boolean => {
+  const isPointInPolygon = (
+    point: L.LatLng,
+    feature: Feature<Geometry>,
+  ): boolean => {
     const layer = L.geoJSON(feature);
     let isInside = false;
 
@@ -39,15 +42,18 @@ export default function StatsPage() {
       if (l instanceof L.Polygon) {
         const polygon = l as L.Polygon;
         const latLngs = polygon.getLatLngs();
-        
+
         const checkRing = (ring: L.LatLng[]) => {
           let inside = false;
           for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-            const xi = ring[i].lng, yi = ring[i].lat;
-            const xj = ring[j].lng, yj = ring[j].lat;
-            
-            const intersect = ((yi > point.lat) !== (yj > point.lat))
-              && (point.lng < (xj - xi) * (point.lat - yi) / (yj - yi) + xi);
+            const xi = ring[i].lng,
+              yi = ring[i].lat;
+            const xj = ring[j].lng,
+              yj = ring[j].lat;
+
+            const intersect =
+              yi > point.lat !== yj > point.lat &&
+              point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
             if (intersect) inside = !inside;
           }
           return inside;
@@ -86,7 +92,10 @@ export default function StatsPage() {
     const stats = new Map<string, number>();
 
     geoData.features.forEach((feature) => {
-      const name = (feature.properties as any)?.NAME_1 || (feature.properties as any)?.name || "Unknown";
+      const name =
+        (feature.properties as any)?.NAME_1 ||
+        (feature.properties as any)?.name ||
+        "Unknown";
       stats.set(name, 0);
     });
 
@@ -94,12 +103,18 @@ export default function StatsPage() {
       const latLng = L.latLng(loc.vi_do, loc.kinh_do);
 
       geoData.features.forEach((feature) => {
-        const name = (feature.properties as any)?.NAME_1 || (feature.properties as any)?.name || "Unknown";
-        
-        if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+        const name =
+          (feature.properties as any)?.NAME_1 ||
+          (feature.properties as any)?.name ||
+          "Unknown";
+
+        if (
+          feature.geometry.type === "Polygon" ||
+          feature.geometry.type === "MultiPolygon"
+        ) {
           const layer = L.geoJSON(feature as Feature<Geometry>);
           const bounds = layer.getBounds();
-          
+
           if (bounds.contains(latLng)) {
             if (isPointInPolygon(latLng, feature)) {
               stats.set(name, (stats.get(name) || 0) + 1);
@@ -117,28 +132,30 @@ export default function StatsPage() {
     if (!selectedRegion || !data || !geoData) return data;
 
     const selectedFeature = geoData.features.find((feature) => {
-      const name = (feature.properties as any)?.NAME_1 || (feature.properties as any)?.name;
+      const name =
+        (feature.properties as any)?.NAME_1 ||
+        (feature.properties as any)?.name;
       return name === selectedRegion;
     });
 
     if (!selectedFeature) return data;
 
-    return data.filter((loc: { kinh_do: number; vi_do: number; ten: string }) => {
-      const latLng = L.latLng(loc.vi_do, loc.kinh_do);
-      return isPointInPolygon(latLng, selectedFeature);
-    });
+    return data.filter(
+      (loc: { kinh_do: number; vi_do: number; ten: string }) => {
+        const latLng = L.latLng(loc.vi_do, loc.kinh_do);
+        return isPointInPolygon(latLng, selectedFeature);
+      },
+    );
   }, [selectedRegion, data, geoData]);
 
   const center =
     !data || data.length === 0
       ? [10.78, 106.7]
       : getCenterFromLocations(
-          data.map(
-            (des: { kinh_do: number; vi_do: number; ten: string }) => [
-              des.vi_do,
-              des.kinh_do,
-            ],
-          ),
+          data.map((des: { kinh_do: number; vi_do: number; ten: string }) => [
+            des.vi_do,
+            des.kinh_do,
+          ]),
         );
 
   const StatsMap = dynamic(() => import("@/components/stats-map"), {
@@ -155,12 +172,9 @@ export default function StatsPage() {
   return (
     <div className="flex gap-4 h-full">
       <div className="w-[600px] h-full overflow-y-auto">
-        <h2 className="text-3xl font-bold mb-2">
-          Danh sách địa điểm
-          
-        </h2>
+        <h2 className="text-3xl font-bold mb-2">Danh sách địa điểm</h2>
 
-        <div className="mb-4"> 
+        <div className="mb-4">
           {selectedRegion && (
             <span className="text-lg font-normal text-blue-600">
               {selectedRegion} ({regionStats.get(selectedRegion) || 0} địa điểm)
@@ -178,18 +192,24 @@ export default function StatsPage() {
         )}
 
         {isLoading && <p>Đang lấy danh sách điểm đến...</p>}
-        {!isLoading && selectedRegion && displayData && displayData.length === 0 && (
-          <p>Chưa có điểm đến nào</p>
-        )}
-        {!isLoading && !selectedRegion && displayData && displayData.length === 0 && (
-          <p>Chọn khu vực...</p>
-        )}
+        {!isLoading &&
+          selectedRegion &&
+          displayData &&
+          displayData.length === 0 && <p>Chưa có điểm đến nào</p>}
+        {!isLoading &&
+          !selectedRegion &&
+          displayData &&
+          displayData.length === 0 && <p>Chọn khu vực...</p>}
         {displayData && displayData.length > 0 && (
           <List
             className="!w-[600px]"
             itemLayout="horizontal"
             dataSource={displayData}
-            renderItem={(dest: { _id: string; ten: string; dia_chi: string }) => (
+            renderItem={(dest: {
+              _id: string;
+              ten: string;
+              dia_chi: string;
+            }) => (
               <List.Item>
                 <List.Item.Meta
                   title={<strong>{dest.ten}</strong>}
@@ -214,7 +234,12 @@ export default function StatsPage() {
             locations={
               displayData &&
               displayData.map(
-                (des: { kinh_do: number; vi_do: number; ten: string; dia_chi: string }) => ({
+                (des: {
+                  kinh_do: number;
+                  vi_do: number;
+                  ten: string;
+                  dia_chi: string;
+                }) => ({
                   position: [des.vi_do, des.kinh_do],
                   name: des.ten,
                   dia_chi: des.dia_chi,

@@ -136,7 +136,7 @@ function RoutingMachine({
       },
       createMarker: () => null,
     } as L.Routing.RoutingControlOptions & { createMarker: () => null }).addTo(
-      map
+      map,
     );
 
     routingRef.current = control;
@@ -162,21 +162,21 @@ export default function DesMap({
   locations,
   polyline,
 }: //   location,
-  {
-    position?: LatLngExpression;
-    zoom?: number;
-    location: LatLngExpression | null;
-    setLocation?: (loc: LatLngExpression) => void;
-    setLocationDetails?: (details: { name: string; address: string }) => void;
-    locations?: Array<{
-      position: LatLngExpression;
-      name: string;
-      diem_khoi_hanh: boolean;
-      diem_den: boolean;
-      dac_san?: any
-    }>;
-    polyline?: boolean;
-  }) {
+{
+  position?: LatLngExpression;
+  zoom?: number;
+  location: LatLngExpression | null;
+  setLocation?: (loc: LatLngExpression) => void;
+  setLocationDetails?: (details: { name: string; address: string }) => void;
+  locations?: Array<{
+    position: LatLngExpression;
+    name: string;
+    diem_khoi_hanh: boolean;
+    diem_den: boolean;
+    dac_san?: any;
+  }>;
+  polyline?: boolean;
+}) {
   const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
   // Đồng bộ marker với location prop từ cha
 

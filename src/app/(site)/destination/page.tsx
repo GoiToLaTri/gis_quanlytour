@@ -10,10 +10,11 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 
 export default function Destination() {
-
   const [location, setLocation] = useState<LatLngExpression | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const handleSetLocation = useCallback((loc: LatLngExpression | null) => {setLocation(loc);}, []);
+  const handleSetLocation = useCallback((loc: LatLngExpression | null) => {
+    setLocation(loc);
+  }, []);
   const { data: dest, isLoading } = useQuery({
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
@@ -21,13 +22,10 @@ export default function Destination() {
       return res.data;
     },
   });
-  const DesMap = dynamic(
-    () => import('@/components/des-map'),
-    {
-      ssr: false,
-      loading: () => <p>Đang tải bản đồ...</p>
-    }
-  );
+  const DesMap = dynamic(() => import("@/components/des-map"), {
+    ssr: false,
+    loading: () => <p>Đang tải bản đồ...</p>,
+  });
 
   return (
     <div className="flex h-full gap-6">
@@ -39,7 +37,12 @@ export default function Destination() {
           <List
             itemLayout="horizontal"
             dataSource={dest}
-            renderItem={(dest: { _id: string, ten_dia_diem: string; ten_tour: string; dia_chi: string; }) => (
+            renderItem={(dest: {
+              _id: string;
+              ten_dia_diem: string;
+              ten_tour: string;
+              dia_chi: string;
+            }) => (
               <List.Item
                 actions={[
                   <Link key={dest._id} href={`/specialty/add/${dest._id}`}>
@@ -65,6 +68,5 @@ export default function Destination() {
         <DesMap location={location} setLocation={handleSetLocation} />
       </div>
     </div>
-
   );
 }

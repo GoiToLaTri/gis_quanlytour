@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import LinkButton from "./link-button";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
-import { BsFillGeoAltFill, BsCupFill, BsCup } from "react-icons/bs";
+import { BsFillGeoAltFill, BsPieChartFill, BsSearch, BsGlobeCentralSouthAsia } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -13,9 +12,9 @@ export default function Navbar() {
       <Link href={"/"}>
         <LinkButton action={pathname === "/"}>
           {pathname === "/" ? (
-            <StarFilled style={{ fontSize: 24 }} />
+            <BsGlobeCentralSouthAsia style={{ fontSize: 24 }} />
           ) : (
-            <StarOutlined style={{ fontSize: 24 }} />
+            <BsGlobeCentralSouthAsia style={{ fontSize: 24 }} />
           )}
           Quản lý tour
         </LinkButton>
@@ -27,25 +26,25 @@ export default function Navbar() {
           ) : (
             <BsFillGeoAltFill style={{ fontSize: 24 }} />
           )}
-          Quản lý địa điểm
+          Danh sách địa điểm
         </LinkButton>
       </Link>
       <Link href={"/specialty"}>
         <LinkButton action={pathname === "/specialty"}>
           {pathname === "/specialty" ? (
-            <BsCupFill style={{ fontSize: 24 }} />
+            <BsSearch style={{ fontSize: 24 }} />
           ) : (
-            <BsCup style={{ fontSize: 24 }} />
+            <BsSearch style={{ fontSize: 24 }} />
           )}
           Tìm kiếm đặc sản
         </LinkButton>
       </Link>
       <Link href={"/stats"}>
         <LinkButton action={pathname === "/stats"}>
-          {pathname === "/stas" ? (
-            <BsFillGeoAltFill style={{ fontSize: 24 }} />
+          {pathname === "/stats" ? (
+            <BsPieChartFill style={{ fontSize: 24 }} />
           ) : (
-            <BsFillGeoAltFill style={{ fontSize: 24 }} />
+            <BsPieChartFill style={{ fontSize: 24 }} />
           )}
           Thống kê địa điểm
         </LinkButton>

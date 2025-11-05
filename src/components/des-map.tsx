@@ -173,7 +173,7 @@ export default function DesMap({
     name: string;
     diem_khoi_hanh: boolean;
     diem_den: boolean;
-    dac_san?: any;
+    dac_san?: Array<object> | null;
   }>;
   polyline?: boolean;
 }) {
@@ -206,7 +206,13 @@ export default function DesMap({
             <Marker key={i} position={loc.position} icon={icon}>
               <Popup>
                 <h2>{loc.name}</h2>
-                {loc.dac_san && <span>Đặc sản: {loc.dac_san.ten}</span>}
+                {loc.dac_san ? (
+                  <span>
+                    Đặc sản: {loc.dac_san.map((ds: any) => ds.ten).join(", ")}
+                  </span>
+                ) : (
+                  "Không có đặc sản"
+                )}
                 <br />
                 {loc.diem_khoi_hanh && <strong>Điểm khởi hành</strong>}
                 {loc.diem_den && <strong>Điểm đến</strong>}

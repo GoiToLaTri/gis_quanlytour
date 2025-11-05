@@ -30,7 +30,7 @@ export default function Destination() {
   return (
     <div className="flex h-full gap-6">
       <div className="flex flex-col overflow-y-auto w-3/10 ">
-        <h2 className="text-3xl font-bold mb-4">Quản lý điểm đến</h2>
+        <h2 className="text-3xl font-bold mb-4">Danh sách địa điểm</h2>
         {isLoading && <p>Đang lấy danh sách điểm đến...</p>}
         {!isLoading && dest && dest.length === 0 && <p>Chưa có điểm đến nào</p>}
         {dest && dest.length > 0 && (

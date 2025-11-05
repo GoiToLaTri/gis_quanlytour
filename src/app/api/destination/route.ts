@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     .populate("ma_dia_diem");
 
   const destination = desInf
-    .filter((item) => item.ma_dia_diem && item.ma_tour)
+    .filter((item) => item.ma_dia_diem && item.ma_tour && item.diem_den === false && item.diem_khoi_hanh === false)
     .map((item) => ({
       _id: item.ma_dia_diem?._id,
       ten_tour: item.ma_tour?.ten,

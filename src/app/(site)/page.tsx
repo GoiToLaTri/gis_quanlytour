@@ -49,7 +49,7 @@ export default function TourManage() {
 
       {tours && tours.length > 0 && (
         <List
-          className="!w-[600px]"
+          className="!w-full"
           itemLayout="horizontal"
           dataSource={tours}
           renderItem={(tour: { _id: string; ten: string }) => (

@@ -31,10 +31,11 @@ export default function AddSpecialty() {
   }, []);
   const [spct, setspct] = useState([]);
 
-  const { data, isLoading } = useQuery({
+  const {data , isLoading } = useQuery({
     queryKey: [QueryKeys.SPECIALTY],
     queryFn: async () => {
       const res = await axios.get(`/api/destination/${params.id}/specialties`);
+      console.log(data)
       return res.data;
     },
   });
@@ -68,22 +69,25 @@ export default function AddSpecialty() {
   });
 
   const { lat, long } = getCoords(location);
-  console.log(data);
 
   return (
     <div className="flex h-full gap-6">
       {contextHolder}
       <div className="flex flex-col overflow-y-auto w-3/10">
         <h2 className="text-2xl font-bold mb-4">Thêm đặc sản mới</h2>
-        <AddSpecialtyForm long={long} lat={lat} dia_diem_id={params.id} />
+        <AddSpecialtyForm long={long} lat={lat} dia_diem_id={params.id} ten_dia_diem={data?.[0]?.ten_dia_diem} />
         <h4 className="text-2xl font-bold mb-4">Danh sách đặc sản đã thêm</h4>
+
         {isLoading && <div>Đang lấy danh sách đặc sản...</div>}
 
         {!isLoading && data && data.length > 0 && (
           <List
             className="!w-[400px]"
             itemLayout="horizontal"
-            dataSource={data}
+            locale={{ emptyText: "Không có đặc sản nào được thêm" }}
+            dataSource={data.filter(
+      (item: any) => item.ten && item.link_id // chỉ render khi có cả 2
+    )}
             renderItem={(des: { ten: string; link_id: string }) => (
               <List.Item
                 actions={[
@@ -96,7 +100,7 @@ export default function AddSpecialty() {
                   </Button>,
                 ]}
               >
-                <List.Item.Meta title={`${des.ten} `} />
+                <List.Item.Meta title={des.ten} />
               </List.Item>
             )}
           />

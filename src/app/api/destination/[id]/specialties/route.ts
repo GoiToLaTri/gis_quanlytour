@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Specialty from "@/models/specialty";
 import connect from "@/lib/mongodb";
 import DestinationsSpecialties from "@/models/destinations-specialties";
+import Destination from "@/models/destination";
 // import { Specialties } from '@/models/specialty';
 
 export async function POST(req: NextRequest) {
@@ -44,16 +45,31 @@ export async function GET(
   try {
     const { id } = await context.params;
     await connect();
-    const desSpec = await DestinationsSpecialties.find({
-      ma_dia_diem: id,
-    }).populate("ma_dac_san");
+    const desSpec = await DestinationsSpecialties.find({ma_dia_diem: id,})
+    .populate("ma_dia_diem")
+    .populate("ma_dac_san");
 
+    if (desSpec.length > 0) {
     const specialties = desSpec.map((ds) => ({
-      _id: ds.ma_dac_san._id,
-      ten: ds.ma_dac_san.ten,
+      _id: ds.ma_dac_san?._id,
+      ten: ds.ma_dac_san?.ten,
+      ten_dia_diem: ds.ma_dia_diem?.ten,
       link_id: ds._id,
     }));
     return NextResponse.json(specialties);
+  }
+    const des = await Destination.findById(id);
+    if (des) {
+      return NextResponse.json([
+        {
+          // _id: null,
+          // ten: null,
+          ten_dia_diem: des.ten,
+          // link_id: null,
+        },
+      ]);
+    }
+    return new Response("Không tìm thấy địa điểm nào", {status: 404})
   } catch (error: any) {
     console.log(error);
     return new Response("Không thể tải danh sách đặc sản", { status: 500 });

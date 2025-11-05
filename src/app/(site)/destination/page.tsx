@@ -19,13 +19,28 @@ export default function Destination() {
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
       const res = await axios.get("/api/destination");
+      console.log(res.data)
       return res.data;
     },
   });
+
+  // const { data: specdes, isLoading: isSpecDes } = useQuery({
+  //   queryKey: [QueryKeys.SPECIALTY],
+  //   queryFn: async () => {
+  //     const res = await axios.get(`/api/destination/${dest.id}/specialties`);
+  //     console.log(res.data)
+  //     return res.data;
+  //   },
+  //   enabled: !!dest,
+  // });
+
+  // const markers = (dest || []).concat(specdes || []);
+
   const DesMap = dynamic(() => import("@/components/des-map"), {
     ssr: false,
     loading: () => <p>Đang tải bản đồ...</p>,
   });
+
 
   return (
     <div className="flex h-full gap-6">
@@ -65,7 +80,20 @@ export default function Destination() {
         )}
       </div>
       <div className="grow-1 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} />
+        <DesMap 
+        location={location} 
+        setLocation={handleSetLocation}
+        locations={
+          dest
+              ? dest.map((d: any) => ({
+                  position: [d.vi_do, d.kinh_do],
+                  name: d.ten_dia_diem,
+                  diem_khoi_hanh: false,
+                  diem_den: false,
+                }))
+              : []
+          }
+          />
       </div>
     </div>
   );

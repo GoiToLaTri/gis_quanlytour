@@ -175,7 +175,6 @@ export default function Specialty() {
                     const specialties = await getSpecialtyFromDestination(
                       destination._id,
                     );
-                    console.log(specialties);
                     setSpecialties(specialties);
                   }}
                   className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}

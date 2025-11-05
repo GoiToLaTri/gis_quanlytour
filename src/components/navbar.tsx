@@ -3,7 +3,7 @@
 import Link from "next/link";
 import LinkButton from "./link-button";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
-import { BsFillGeoAltFill } from "react-icons/bs";
+import { BsFillGeoAltFill, BsCupFill, BsCup } from "react-icons/bs";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -33,11 +33,11 @@ export default function Navbar() {
       <Link href={"/specialty"}>
         <LinkButton action={pathname === "/specialty"}>
           {pathname === "/specialty" ? (
-            <StarFilled style={{ fontSize: 24 }} />
+            <BsCupFill style={{ fontSize: 24 }} />
           ) : (
-            <StarOutlined style={{ fontSize: 24 }} />
+            <BsCup style={{ fontSize: 24 }} />
           )}
-          Quản lý đặc sản
+          Tìm kiếm đặc sản
         </LinkButton>
       </Link>
       <Link href={"/stats"}>

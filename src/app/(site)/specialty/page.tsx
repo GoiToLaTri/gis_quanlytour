@@ -17,6 +17,20 @@ const getAllDestination = async () => {
   }
 };
 
+// Hàm lấy đặc sản từ địa điểm
+const getSpecialtyFromDestination = async (id: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:3000/api/destination/${id}/specialties`,
+    );
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (error) {
+    console.log("Lỗi:", error);
+  }
+};
+
 // Hàm tìm địa điểm có đặc sản
 const searchSpecialtyInDestination = async (query: string) => {
   try {
@@ -58,6 +72,9 @@ export default function Specialty() {
 
   // Chứa thông tin đặc sản được tìm thấy
   const [specialty, setSpecialty] = useState<object | null>(null);
+
+  // Chứa danh sách đặc sản của địa điểm được chọn
+  const [specialties, setSpecialties] = useState<Array<object>>([]);
 
   // Giá trị tìm kiếm người dùng nhập vào
   const [query, setQuery] = useState<string>("");
@@ -127,6 +144,7 @@ export default function Specialty() {
           onClear={async () => {
             setQuery("");
             setSpecialty(null);
+            setSpecialties([]);
 
             // Tải lại tất cả địa điểm
             await fetchDestinations();
@@ -148,13 +166,17 @@ export default function Specialty() {
               return (
                 <div
                   key={index}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     setSelectedDestination(destination);
                     handleSetLocation({
                       lat: destination?.vi_do,
                       lng: destination?.kinh_do,
                     });
-                    console.log("Đặc sản", specialty);
+                    const specialties = await getSpecialtyFromDestination(
+                      destination._id,
+                    );
+                    console.log(specialties);
+                    setSpecialties(specialties);
                   }}
                   className={`cursor-pointer ${selectedDestination?._id === destination?._id && "bg-gray-200"} hover:bg-gray-200 p-2 rounded-md`}
                 >
@@ -195,7 +217,7 @@ export default function Specialty() {
                       selectedDestination?.ten,
                     diem_khoi_hanh: false,
                     diem_den: false,
-                    dac_san: specialty,
+                    dac_san: specialties.length > 0 ? specialties : null,
                   },
                 ]
               : undefined

@@ -17,7 +17,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function AddSpecialty() {
-  const DesMap = dynamic(() => import("@/components/des-map"), {
+  const DesMap = dynamic(() => import("@/components/des-map-spec"), {
     ssr: false, // Tắt server-side rendering
     loading: () => <p>Đang tải bản đồ...</p>,
   });
@@ -32,13 +32,39 @@ export default function AddSpecialty() {
   const [spct, setspct] = useState([]);
 
   const {data , isLoading } = useQuery({
-    queryKey: [QueryKeys.SPECIALTY],
+    queryKey: [QueryKeys.SPECIALTY  ],
     queryFn: async () => {
       const res = await axios.get(`/api/destination/${params.id}/specialties`);
-      console.log(data)
+      // console.log(data)
       return res.data;
     },
+    
   });
+  const { data: dest, isLoading: isLoadingDest } = useQuery({
+    queryKey: [QueryKeys.DESTINATION_SPECIALTY_SPECIFIC],
+    queryFn: async () => {
+      const res = await axios.get(`/api/des-spec/${params.id}/specific`);
+      console.log(res.data)
+      return res.data;
+    },
+    enabled: !!data,
+  });
+
+  // useEffect(() => {
+  //   if (!isLoadingDest && dest && params.id) {
+  //     refetchSpec();
+  //   }
+  // }, [dest, isLoadingDest, params.id, refetchSpec]);
+
+  // const markers = (dest || []).concat(data || []).map((item: any) => ({
+  //   position: [item.vi_do, item.kinh_do],
+  //   name: item?.ten_dia_diem || item?.ten, // ưu tiên cái nào có
+  //   diem_khoi_hanh: false,
+  //   diem_den: false,
+  //   dac_san: item.length > 0 ? item.ten : null,
+    
+  // }));
+  // console.log(markers)
   const mutation = useMutation({
     mutationFn: async (id: string) => {
       // setIsLoading(true);
@@ -67,6 +93,7 @@ export default function AddSpecialty() {
       });
     },
   });
+  // const currentSpecialties = dest && dest.length > 0 ? dest : null;
 
   const { lat, long } = getCoords(location);
 
@@ -107,7 +134,19 @@ export default function AddSpecialty() {
         )}
       </div>
       <div className="grow-1 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} />
+        <DesMap location={location} setLocation={handleSetLocation} 
+        locations={
+          dest // Nếu dest là một đối tượng (có dữ liệu)
+              ? [{ // BỌC dest vào một mảng [] và truy cập thuộc tính trực tiếp
+                  position: [dest.vi_do, dest.kinh_do],
+                  name: dest.ten_dia_diem,
+                  diem_khoi_hanh: false,
+                  diem_den: false,
+                  dac_san: dest.dac_san,
+              }]
+              : [] // Ngược lại, trả về mảng rỗng
+        } 
+        />
       </div>
     </div>
   );

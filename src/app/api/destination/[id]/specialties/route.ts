@@ -55,6 +55,8 @@ export async function GET(
       ten: ds.ma_dac_san?.ten,
       ten_dia_diem: ds.ma_dia_diem?.ten,
       link_id: ds._id,
+      vi_do: ds.ma_dia_diem.vi_do,
+      kinh_do: ds.ma_dia_diem.kinh_do,
     }));
     return NextResponse.json(specialties);
   }

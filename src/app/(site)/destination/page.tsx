@@ -19,24 +19,23 @@ export default function Destination() {
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
       const res = await axios.get("/api/destination");
-      console.log(res.data)
+      // console.log(res.data)
       return res.data;
     },
   });
 
-  // const { data: specdes, isLoading: isSpecDes } = useQuery({
-  //   queryKey: [QueryKeys.SPECIALTY],
-  //   queryFn: async () => {
-  //     const res = await axios.get(`/api/destination/${dest.id}/specialties`);
-  //     console.log(res.data)
-  //     return res.data;
-  //   },
-  //   enabled: !!dest,
-  // });
+  const { data: desSpec, isLoading: isDesSpec } = useQuery({
+    queryKey: [QueryKeys.DESTINATION_SPECIALTY],
+    queryFn: async () => {
+      const res = await axios.get(`/api/des-spec`);
+      // console.log(res.data)
+      return res.data;
+    },
+    // enabled: !!dest,
+  });
 
-  // const markers = (dest || []).concat(specdes || []);
 
-  const DesMap = dynamic(() => import("@/components/des-map"), {
+  const DesMap = dynamic(() => import("@/components/des-map-spec"), {
     ssr: false,
     loading: () => <p>Đang tải bản đồ...</p>,
   });
@@ -84,12 +83,13 @@ export default function Destination() {
         location={location} 
         setLocation={handleSetLocation}
         locations={
-          dest
-              ? dest.map((d: any) => ({
+          desSpec
+              ? desSpec.map((d: any) => ({
                   position: [d.vi_do, d.kinh_do],
-                  name: d.ten_dia_diem,
+                  name: d.dia_diem,
                   diem_khoi_hanh: false,
                   diem_den: false,
+                  dac_san: d.dac_san,
                 }))
               : []
           }

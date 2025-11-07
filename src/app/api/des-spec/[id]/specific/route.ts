@@ -22,12 +22,15 @@ export async function GET(
         const desSpec = await DestinationsSpecialties.find({ ma_dia_diem: id })
             .populate("ma_dac_san");
 
-        // 3. Xây dựng mảng Đặc sản
+        // 3. chuyển đặc sản của địa điểm thành mảng
         const dac_san_array = desSpec
             .map((ds: any) => {
                 // Đảm bảo ma_dac_san đã được populate thành công
                 if (ds.ma_dac_san) {
-                    return { ten: ds.ma_dac_san.ten };
+                    return { 
+                        ten: ds.ma_dac_san?.ten ,
+                        link_id:ds._id
+                    };
                 }
                 return null;
             })
@@ -35,6 +38,7 @@ export async function GET(
 
         // 4. Trả về cấu trúc dữ liệu duy nhất
         return NextResponse.json({
+            
             ten_dia_diem: des.ten,
             vi_do: des.vi_do,
             kinh_do: des.kinh_do,

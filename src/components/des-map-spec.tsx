@@ -206,7 +206,7 @@ export default function DesMap({
             <Marker key={i} position={loc.position} icon={icon}>
               <Popup>
                 <h2>{loc.name}</h2>
-                {loc.dac_san ? (
+                {loc.dac_san && loc.dac_san.length > 0 ? (
                   <span>
                     Đặc sản: {loc.dac_san.map((ds: any) => ds.ten).join(", ")}
                   </span>

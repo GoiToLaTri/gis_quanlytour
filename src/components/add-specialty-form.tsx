@@ -47,7 +47,7 @@ export default function AddSpecialtyForm({
       setIsLoading(false);
       setIsDisable(false);
       queryClient.prefetchQuery({
-        queryKey: [QueryKeys.SPECIALTY],
+        queryKey: [QueryKeys.DESTINATION_SPECIALTY_SPECIFIC],
       });
       messageApi.open({
         type: "success",

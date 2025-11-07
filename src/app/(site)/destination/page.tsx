@@ -19,7 +19,6 @@ export default function Destination() {
     queryKey: [QueryKeys.DESTINATION],
     queryFn: async () => {
       const res = await axios.get("/api/destination");
-      // console.log(res.data)
       return res.data;
     },
   });
@@ -28,17 +27,25 @@ export default function Destination() {
     queryKey: [QueryKeys.DESTINATION_SPECIALTY],
     queryFn: async () => {
       const res = await axios.get(`/api/des-spec`);
-      // console.log(res.data)
       return res.data;
     },
-    // enabled: !!dest,
   });
-
 
   const DesMap = dynamic(() => import("@/components/des-map-spec"), {
     ssr: false,
     loading: () => <p>Đang tải bản đồ...</p>,
   });
+ // chuyển đặc sản trong object thành array để hiển thị
+  const specialtiesMap = desSpec?.reduce((acc: any, item: any) => {
+    // Key là tên địa điểm (dia_diem)
+    const key = item.dia_diem; 
+    
+    if (key) {
+        // Value là mảng dac_san
+        acc[key] = item.dac_san;
+    }
+    return acc;
+    }, {}) || {};
 
 
   return (
@@ -83,13 +90,13 @@ export default function Destination() {
         location={location} 
         setLocation={handleSetLocation}
         locations={
-          desSpec
-              ? desSpec.map((d: any) => ({
+          dest
+              ? dest.map((d: any) => ({
                   position: [d.vi_do, d.kinh_do],
-                  name: d.dia_diem,
+                  name: d.ten_dia_diem,
                   diem_khoi_hanh: false,
                   diem_den: false,
-                  dac_san: d.dac_san,
+                  dac_san: specialtiesMap[d.ten_dia_diem],
                 }))
               : []
           }

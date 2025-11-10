@@ -14,7 +14,6 @@ export async function GET(req: Request) {
         const allDesSpec = await DestinationsSpecialties.find({})
             .populate("ma_dac_san", "", Specialty) // Populate để lấy tên đặc sản
             .populate("ma_dia_diem", "", Destination); // Vẫn cần populate để lấy ID/Tên đặc sản
-        console.log(allDesSpec)
         // 3. TẠO MAP CHỨA CÁC ĐẶC SẢN ĐÃ NHÓM THEO ID ĐỊA ĐIỂM
         const specialtiesByDestinationId = new Map();
 

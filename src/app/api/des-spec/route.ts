@@ -1,6 +1,7 @@
 import connect from "@/lib/mongodb";
 import DestinationsSpecialties from "@/models/destinations-specialties";
 import Destination from "@/models/destination"; // Cần import model Destination
+import Specialty from "@/models/specialty";
 
 export async function GET(req: Request) {
     try {
@@ -11,9 +12,9 @@ export async function GET(req: Request) {
 
         // 2. Lấy tất cả MỐI QUAN HỆ Địa điểm - Đặc sản và populate
         const allDesSpec = await DestinationsSpecialties.find({})
-            .populate("ma_dac_san")
-            .populate("ma_dia_diem"); // Vẫn cần populate để lấy ID/Tên đặc sản
-
+            .populate("ma_dac_san", "", Specialty) // Populate để lấy tên đặc sản
+            .populate("ma_dia_diem", "", Destination); // Vẫn cần populate để lấy ID/Tên đặc sản
+        console.log(allDesSpec)
         // 3. TẠO MAP CHỨA CÁC ĐẶC SẢN ĐÃ NHÓM THEO ID ĐỊA ĐIỂM
         const specialtiesByDestinationId = new Map();
 

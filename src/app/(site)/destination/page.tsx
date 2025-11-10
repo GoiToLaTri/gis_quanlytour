@@ -22,10 +22,31 @@ export default function Destination() {
       return res.data;
     },
   });
-  const DesMap = dynamic(() => import("@/components/des-map"), {
+
+  const { data: desSpec, isLoading: isDesSpec } = useQuery({
+    queryKey: [QueryKeys.DESTINATION_SPECIALTY],
+    queryFn: async () => {
+      const res = await axios.get(`/api/des-spec`);
+      return res.data;
+    },
+  });
+
+  const DesMap = dynamic(() => import("@/components/des-map-spec"), {
     ssr: false,
     loading: () => <p>Đang tải bản đồ...</p>,
   });
+ // chuyển đặc sản trong object thành array để hiển thị
+  const specialtiesMap = desSpec?.reduce((acc: any, item: any) => {
+    // Key là tên địa điểm (dia_diem)
+    const key = item.dia_diem; 
+    
+    if (key) {
+        // Value là mảng dac_san
+        acc[key] = item.dac_san;
+    }
+    return acc;
+    }, {}) || {};
+
 
   return (
     <div className="flex h-full gap-6">
@@ -65,7 +86,21 @@ export default function Destination() {
         )}
       </div>
       <div className="grow-1 rounded-lg">
-        <DesMap location={location} setLocation={handleSetLocation} />
+        <DesMap 
+        location={location} 
+        setLocation={handleSetLocation}
+        locations={
+          dest
+              ? dest.map((d: any) => ({
+                  position: [d.vi_do, d.kinh_do],
+                  name: d.ten_dia_diem,
+                  diem_khoi_hanh: false,
+                  diem_den: false,
+                  dac_san: specialtiesMap[d.ten_dia_diem],
+                }))
+              : []
+          }
+          />
       </div>
     </div>
   );

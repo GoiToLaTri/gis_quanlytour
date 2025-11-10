@@ -3,7 +3,7 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "@ant-design/v5-patch-for-react-19";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { unstableSetRender } from "antd";
 import { createRoot } from "react-dom/client";
 type RenderType = NonNullable<Parameters<typeof unstableSetRender>[0]>;
@@ -33,7 +33,7 @@ export default function AppProvider({
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       <AntdRegistry>{children}</AntdRegistry>
     </QueryClientProvider>
   );

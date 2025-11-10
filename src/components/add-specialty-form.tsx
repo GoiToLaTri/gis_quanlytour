@@ -9,17 +9,21 @@ import { useParams } from "next/navigation";
 
 type FieldType = {
   ma_dia_diem?: string;
-  ten?: string;
+  ten?: string ;
+  ten_dia_diem?: string;
 };
 
 export default function AddSpecialtyForm({
   long,
   lat,
   dia_diem_id,
+  ten_dia_diem,
+
 }: {
   long: number;
   lat: number;
   dia_diem_id?: string;
+  ten_dia_diem?: string;
 }) {
   // const router = useRouter();
   const params = useParams<{ id: string }>();
@@ -43,7 +47,7 @@ export default function AddSpecialtyForm({
       setIsLoading(false);
       setIsDisable(false);
       queryClient.prefetchQuery({
-        queryKey: [QueryKeys.SPECIALTY],
+        queryKey: [QueryKeys.DESTINATION_SPECIALTY_SPECIFIC],
       });
       messageApi.open({
         type: "success",
@@ -81,8 +85,9 @@ export default function AddSpecialtyForm({
       ma_dia_diem: dia_diem_id,
       kinh_do: long,
       vi_do: lat,
+      ten_dia_diem: ten_dia_diem,
     });
-  }, [long, lat, dia_diem_id, form]);
+  }, [long, lat, dia_diem_id, ten_dia_diem, form]);
 
   return (
     <Form
@@ -99,6 +104,14 @@ export default function AddSpecialtyForm({
         label="Mã địa điểm"
         name="ma_dia_diem"
         rules={[{ required: true, message: "Vui lòng nhập mã địa điểm!" }]}
+      >
+        <Input disabled />
+      </Form.Item>
+
+      <Form.Item<FieldType>
+        label="Tên địa điểm"
+        name="ten_dia_diem"
+        // rules={[{ required: true, message: "Vui lòng nhập tên địa điểm!" }]}
       >
         <Input disabled />
       </Form.Item>

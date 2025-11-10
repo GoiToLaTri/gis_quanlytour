@@ -64,10 +64,10 @@ function PanTo({ latlng }: { latlng: LatLngExpression | null }) {
 export default function DesMap({
   position = [10.78, 106.7] as LatLngExpression,
   zoom = 5,
-  location,
-  setLocation,
+  // location,
+  // setLocation,
   locations,
-  polyline,
+  // polyline,
   geoData,
   regionStats,
   selectedRegion,
@@ -75,20 +75,20 @@ export default function DesMap({
 }: {
   position?: LatLngExpression;
   zoom?: number;
-  location: LatLngExpression | null;
-  setLocation?: (loc: LatLngExpression) => void;
+  // location: LatLngExpression | null;
+  // setLocation?: (loc: LatLngExpression) => void;
   locations?: Array<{
     position: LatLngExpression;
     name: string;
     dia_chi: string;
   }>;
-  polyline?: boolean;
+  // polyline?: boolean;
   geoData: FeatureCollection | null;
   regionStats: Map<string, number>;
   selectedRegion: string | null;
   onRegionClick: (regionName: string) => void;
 }) {
-  const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
+  // const [clickedPos, setClickedPos] = useState<LatLngExpression | null>(null);
 
   // Calculate center and zoom for selected region
   const mapViewSettings = useMemo(() => {
@@ -106,7 +106,7 @@ export default function DesMap({
 
         return {
           center: [center.lat, center.lng] as LatLngExpression,
-          zoom: 8, // Closer zoom level for selected region
+          zoom: 9, // Closer zoom level for selected region
         };
       }
     }
@@ -117,69 +117,69 @@ export default function DesMap({
     };
   }, [selectedRegion, geoData, position, zoom]);
 
-  useEffect(() => {
-    setClickedPos(location);
-  }, [location]);
+  // useEffect(() => {
+  //   setClickedPos(location);
+  // }, [location]);
 
   // Helper function to check if point is in polygon
-  const isPointInPolygon = (
-    point: L.LatLng,
-    feature: Feature<Geometry>,
-  ): boolean => {
-    const layer = L.geoJSON(feature);
-    let isInside = false;
+  // const isPointInPolygon = (
+  //   point: L.LatLng,
+  //   feature: Feature<Geometry>,
+  // ): boolean => {
+  //   const layer = L.geoJSON(feature);
+  //   let isInside = false;
 
-    layer.eachLayer((l) => {
-      if (l instanceof L.Polygon) {
-        const polygon = l as L.Polygon;
-        const latLngs = polygon.getLatLngs();
+  //   layer.eachLayer((l) => {
+  //     if (l instanceof L.Polygon) {
+  //       const polygon = l as L.Polygon;
+  //       const latLngs = polygon.getLatLngs();
 
-        // Check for MultiPolygon (array of arrays)
-        const checkRing = (ring: L.LatLng[]) => {
-          let inside = false;
-          for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-            const xi = ring[i].lng,
-              yi = ring[i].lat;
-            const xj = ring[j].lng,
-              yj = ring[j].lat;
+  //       // Check for MultiPolygon (array of arrays)
+  //       const checkRing = (ring: L.LatLng[]) => {
+  //         let inside = false;
+  //         for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+  //           const xi = ring[i].lng,
+  //             yi = ring[i].lat;
+  //           const xj = ring[j].lng,
+  //             yj = ring[j].lat;
 
-            const intersect =
-              yi > point.lat !== yj > point.lat &&
-              point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
-            if (intersect) inside = !inside;
-          }
-          return inside;
-        };
+  //           const intersect =
+  //             yi > point.lat !== yj > point.lat &&
+  //             point.lng < ((xj - xi) * (point.lat - yi)) / (yj - yi) + xi;
+  //           if (intersect) inside = !inside;
+  //         }
+  //         return inside;
+  //       };
 
-        if (Array.isArray(latLngs[0])) {
-          // Polygon with holes or MultiPolygon
-          for (const ring of latLngs as L.LatLng[][]) {
-            if (Array.isArray(ring[0])) {
-              // MultiPolygon
-              for (const subRing of ring as unknown as L.LatLng[][]) {
-                if (checkRing(subRing)) {
-                  isInside = true;
-                  break;
-                }
-              }
-            } else {
-              // Polygon with holes
-              if (checkRing(ring as L.LatLng[])) {
-                isInside = true;
-                break;
-              }
-            }
-            if (isInside) break;
-          }
-        } else {
-          // Simple polygon
-          isInside = checkRing(latLngs as L.LatLng[]);
-        }
-      }
-    });
+  //       if (Array.isArray(latLngs[0])) {
+  //         // Polygon with holes or MultiPolygon
+  //         for (const ring of latLngs as L.LatLng[][]) {
+  //           if (Array.isArray(ring[0])) {
+  //             // MultiPolygon
+  //             for (const subRing of ring as unknown as L.LatLng[][]) {
+  //               if (checkRing(subRing)) {
+  //                 isInside = true;
+  //                 break;
+  //               }
+  //             }
+  //           } else {
+  //             // Polygon with holes
+  //             if (checkRing(ring as L.LatLng[])) {
+  //               isInside = true;
+  //               break;
+  //             }
+  //           }
+  //           if (isInside) break;
+  //         }
+  //       } else {
+  //         // Simple polygon
+  //         isInside = checkRing(latLngs as L.LatLng[]);
+  //       }
+  //     }
+  //   });
 
-    return isInside;
-  };
+  //   return isInside;
+  // };
 
   // Color scale based on destination count
   const getColorForCount = (count: number): string => {
@@ -301,7 +301,7 @@ export default function DesMap({
           </Marker>
         ))}
 
-      {clickedPos && (
+      {/* {clickedPos && (
         <Marker position={clickedPos}>
           <Popup>
             Tọa độ vừa click:
@@ -311,18 +311,18 @@ export default function DesMap({
               : `${clickedPos.lat.toFixed(5)}, ${clickedPos.lng.toFixed(5)}`}
           </Popup>
         </Marker>
-      )}
+      )} */}
 
-      <ClickHandler
+      {/* <ClickHandler
         onMapClick={(latlng) => {
           setClickedPos(latlng);
           if (setLocation) setLocation(latlng);
         }}
-      />
+      /> */}
 
       {/* Add this component to handle view changes */}
-      <Recenter latlng={selectedRegion ? mapViewSettings.center : location} />
-      <PanTo latlng={clickedPos} />
+      <Recenter latlng={selectedRegion ? mapViewSettings.center : position} />
+      {/* <PanTo latlng={clickedPos} /> */}
     </MapContainer>
   );
 }

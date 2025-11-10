@@ -3,7 +3,7 @@
 import { QueryKeys } from "@/enums";
 import { getCenterFromLocations } from "@/utils/center-from-loc";
 import { useQuery } from "@tanstack/react-query";
-import { List } from "antd";
+import { Button, List } from "antd";
 import axios from "axios";
 import { LatLngExpression } from "leaflet";
 import * as L from "leaflet";
@@ -170,26 +170,25 @@ export default function StatsPage() {
   const displayData = selectedRegion ? filteredLocations : [];
 
   return (
-    <div className="flex gap-4 h-full">
-      <div className="w-[600px] h-full overflow-y-auto">
-        <h2 className="text-3xl font-bold mb-2">Danh sách địa điểm</h2>
+    <div className="flex h-full gap-6">
+      <div className="overflow-y-auto w-3/10">
+        <h2 className="text-2xl font-bold mb-2">Danh sách địa điểm</h2>
 
-        <div className="mb-4">
+        {selectedRegion && (
+          <Button className="mb-4" onClick={() => setSelectedRegion(null)} color="default" variant="solid" size="large"> 
+            Trở về
+          </Button>
+        )}
+
+        <div className="mb-0 mt-4">
           {selectedRegion && (
-            <span className="text-lg font-normal text-blue-600">
+            <span>
               {selectedRegion} ({regionStats.get(selectedRegion) || 0} địa điểm)
             </span>
           )}
         </div>
 
-        {selectedRegion && (
-          <button
-            onClick={() => setSelectedRegion(null)}
-            className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Xem tất cả
-          </button>
-        )}
+
 
         {isLoading && <p>Đang lấy danh sách điểm đến...</p>}
         {!isLoading &&
@@ -199,10 +198,10 @@ export default function StatsPage() {
         {!isLoading &&
           !selectedRegion &&
           displayData &&
-          displayData.length === 0 && <p>Chọn khu vực...</p>}
+          displayData.length === 0 && <p className="text-gray-400">Chọn tỉnh thành để xem thống kê.</p>}
         {displayData && displayData.length > 0 && (
           <List
-            className="!w-[600px]"
+            // className="!w-[600px]"
             itemLayout="horizontal"
             dataSource={displayData}
             renderItem={(dest: {
@@ -228,9 +227,9 @@ export default function StatsPage() {
       {!isLoading && (
         <div className="w-full">
           <StatsMap
-            polyline
+            // polyline
             position={center as LatLngExpression}
-            location={null}
+            // location={null}
             locations={
               displayData &&
               displayData.map(

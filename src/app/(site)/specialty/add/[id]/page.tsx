@@ -97,7 +97,7 @@ export default function AddSpecialty() {
               <List.Item
                 actions={[
                   <Button
-                    type="link"
+                    type="default"
                     key={de.link_id}
                     onClick={() => mutation.mutate(de.link_id)}
                   >
@@ -115,14 +115,14 @@ export default function AddSpecialty() {
         <DesMap location={location} setLocation={handleSetLocation} 
         locations={
           dest 
-              ? [{ // BỌC dest vào một mảng [] và truy cập thuộc tính trực tiếp
-                  position: [dest.vi_do, dest.kinh_do],
-                  name: dest.ten_dia_diem,
-                  diem_khoi_hanh: false,
-                  diem_den: false,
-                  dac_san: dest.dac_san,
-              }]
-              : []
+              ? [{ // BỌC dest vào một mảng [] và truy cập thuộc tính trực tiếp
+                  position: [dest.vi_do, dest.kinh_do],
+                  name: dest.ten_dia_diem,
+                  diem_khoi_hanh: false,
+                  diem_den: false,
+                  dac_san: dest.dac_san,
+               }]
+               : []
         } 
         />
       </div>

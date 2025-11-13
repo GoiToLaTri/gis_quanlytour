@@ -64,10 +64,7 @@ export async function GET(
     if (des) {
       return NextResponse.json([
         {
-          // _id: null,
-          // ten: null,
           ten_dia_diem: des.ten,
-          // link_id: null,
         },
       ]);
     }

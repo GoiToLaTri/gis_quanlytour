@@ -2,7 +2,7 @@
 
 import { QueryKeys } from "@/enums";
 import { useQuery } from "@tanstack/react-query";
-import { List } from "antd";
+import { Button, List } from "antd";
 import axios from "axios";
 import { LatLngExpression } from "leaflet";
 import dynamic from "next/dynamic";
@@ -67,8 +67,8 @@ export default function Destination() {
               <List.Item
                 actions={[
                   <Link key={dest._id} href={`/specialty/add/${dest._id}`}>
-                    Thêm đặc sản
-                  </Link>,
+                   <Button color="default" variant="solid">Thêm đặc sản</Button>
+                  </Link>
                 ]}
               >
                 <List.Item.Meta
